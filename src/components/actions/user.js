@@ -18,8 +18,8 @@ export const login =  (email, password)=>{
                 email,
                 password
             })
+            localStorage.setItem('token',response.data.token)
             dispatch(setUser(response.data))
-                localStorage.setItem('token',response.data.token)
         }catch (e){
             console.log(e)
         }
