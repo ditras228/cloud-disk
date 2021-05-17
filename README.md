@@ -1,4 +1,4 @@
 # Инструкция
-###`$ npm i`
-###`$ npm start`
-###`$ npm run dev `
+### `$ npm i`
+### `$ npm start`
+### `$ npm run dev`
