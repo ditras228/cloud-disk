@@ -7,3 +7,9 @@ export const CurrentDir = (state: any) =>{
 export const Files =(state: any)=>{
     return  state.file.files
 }
+export const DirStack = (state: any)=>{
+    return state.file.dirStack
+}
+export const Loader = (state: any)=>{
+    return state.app.loader
+}

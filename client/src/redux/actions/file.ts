@@ -1,7 +1,7 @@
-import {baseURL, instance} from '../api/api'
-import {fileReducerAction, fileReducerActionType} from '../../reducers/fileReducer'
-import {appReducerAction, appReducerActionType} from '../../reducers/appReducer'
-import {BaseThunkType} from '../../reducers'
+import {baseURL, instance} from '../../components/api/api'
+import {fileReducerAction, fileReducerActionType} from '../reducers/fileReducer'
+import {appReducerAction, appReducerActionType} from '../reducers/appReducer'
+import {BaseThunkType} from '../reducers'
 
 export const getFiles = (dirId: string, sort: string | null): fileThunkType  => {
     return async dispatch => {

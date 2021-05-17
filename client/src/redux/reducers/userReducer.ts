@@ -1,11 +1,10 @@
 import {InferActionsTypes} from './index'
-import {appReducerAction} from './appReducer'
 
 const defaultState = {
     currentUser: {},
     isAuth: false
 }
-export default function userReducer(state = defaultState, action: appReducerActionType) {
+export default function userReducer(state = defaultState, action: userReducerActionType) {
     switch (action.type) {
         case 'SET_USER':
             return {
@@ -28,8 +27,4 @@ export const userReducerAction = {
     setUser: (user: any)  => ({type: 'SET_USER', payload: user} as const),
     logOut: () => ({type: 'LOGOUT'} as const)
 }
-export type appReducerActionType = InferActionsTypes<typeof userReducerAction>
-
-type IUser = {
-
-}
+export type userReducerActionType = InferActionsTypes<typeof userReducerAction>

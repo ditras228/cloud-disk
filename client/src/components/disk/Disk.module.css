@@ -1,0 +1,10 @@
+.dropArea{
+    height: calc(100vh - 50px - 50px);
+    margin: 20px;
+    border: dashed darkblue 2px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 100px;
+
+}

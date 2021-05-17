@@ -2,11 +2,11 @@ import React, {useState} from 'react';
 import {Button, Form, FormControl, InputGroup, Navbar} from "react-bootstrap";
 import {useHistory} from "react-router";
 import {useDispatch, useSelector} from "react-redux";
-import {getFiles, searchFiles} from "../actions/file";
-import {appReducerAction} from "../../reducers/appReducer";
+import {getFiles, searchFiles} from "../../redux/actions/file";
+import {appReducerAction} from "../../redux/reducers/appReducer";
 import {Disc, Search} from "react-bootstrap-icons";
-import {CurrentDir, IsAuth} from '../../redux/user-selector'
-import {userReducerAction} from '../../reducers/userReducer'
+import {CurrentDir, IsAuth} from '../../redux/selectors'
+import {userReducerAction} from '../../redux/reducers/userReducer'
 
 const NavBar = () => {
     const history = useHistory()
@@ -40,7 +40,7 @@ const NavBar = () => {
 
             <Navbar.Collapse id="basic-navbar-nav">
                 <Form className="d-flex" style={{marginLeft: "auto", width: 600}}>
-                    <InputGroup>
+                    {isAuth &&<InputGroup>
                         <InputGroup.Prepend>
                             <InputGroup.Text id="basic-addon1">
                                 <Search/>
@@ -48,14 +48,14 @@ const NavBar = () => {
                         </InputGroup.Prepend>
                         <FormControl
                             type="search"
-                            placeholder="Search"
+                            placeholder="Поиск"
 
                             className="mr-2"
                             aria-label="Search"
                             value={searchName}
                             onChange={e => searchChangeHandler(e)}
                         />
-                    </InputGroup>
+                    </InputGroup>}
                 </Form>
                 <Form inline style={{marginLeft: "auto"}}>
 
@@ -67,6 +67,10 @@ const NavBar = () => {
                     {!isAuth && <Button variant="outline-success"
                                         onClick={() => history.push('/registration')}>
                         Регистрация
+                    </Button>}
+                    {isAuth && <Button variant="outline-dark" style={{marginRight: 10}}
+                                       onClick={() => history.push('/profile')}>
+                        Профиль
                     </Button>}
                     {isAuth && <Button variant="outline-danger"
                                        onClick={() => dispatch(userReducerAction.logOut())}>

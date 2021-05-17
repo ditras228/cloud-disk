@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import {Button, Card, Container, Form} from "react-bootstrap";
-import {registration} from "../actions/user";
+import {registration} from "../../redux/actions/user";
 
 const Registration = () => {
     const [email, setEmail] = useState('')

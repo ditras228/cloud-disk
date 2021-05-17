@@ -1,9 +1,10 @@
-import {instance} from "../api/api";
-import {setUser} from "../../reducers/userReducer";
+import {instance} from "../../components/api/api";
+import {userReducerAction, userReducerActionType} from '../reducers/userReducer'
+import {BaseThunkType} from '../reducers'
 
-export const registration = async (email, password)=>{
+export const registration = async (email: string, password: string)=>{
     try{
-        const response= await instance.post('auth/registration/', {
+        await instance.post('auth/registration/', {
             email,
             password
         })
@@ -11,7 +12,7 @@ export const registration = async (email, password)=>{
         console.log(e)
     }
 }
-export const login =  (email, password)=>{
+export const login =  (email: string, password: string):userThunkType =>{
     return async dispatch =>{
         try{
             const response= await instance.post('auth/login', {
@@ -19,19 +20,19 @@ export const login =  (email, password)=>{
                 password
             })
             localStorage.setItem('token',response.data.token)
-            dispatch(setUser(response.data))
+            dispatch(userReducerAction.setUser(response.data))
         }catch (e){
             console.log(e)
         }
     }
 
 }
-export const auth =  ()=>{
+export const auth =  (): userThunkType=>{
     return async dispatch =>{
         try{
             const response= await instance.get('auth/auth',
                 {headers: {Authorization: `Bearer ${localStorage.getItem('token')}`}})
-            dispatch(setUser(response.data))
+            dispatch(userReducerAction.setUser(response.data))
             localStorage.setItem('token',response.data.token)
         }catch (e){
             console.log(e)
@@ -40,3 +41,4 @@ export const auth =  ()=>{
     }
 
 }
+type userThunkType = BaseThunkType<userReducerActionType>

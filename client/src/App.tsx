@@ -1,15 +1,16 @@
-import './App.css';
 import NavBar from "./components/navbar/NavBar";
 import {BrowserRouter, Switch, Route, Redirect} from "react-router-dom";
 import Registration from "./components/registration/Registration";
 import Auth from "./components/login/Login";
 import {useDispatch, useSelector} from "react-redux";
 import {useEffect} from "react";
-import {auth} from "./components/actions/user";
+import {auth} from "./redux/actions/user";
 import Disk from "./components/disk/Disk";
+import {IsAuth} from './redux/selectors'
+import Profile from './components/profile/Profile'
 
 function App() {
-    const isAuth = useSelector(state => state.user.isAuth)
+    const isAuth = useSelector(state => IsAuth(state))
     const dispatch = useDispatch()
 
     useEffect(()=>{
@@ -27,6 +28,7 @@ function App() {
                 :
                 <Switch>
                     <Route exact path={'/'} component={Disk}/>
+                    <Route exact path={'/profile'} component={Profile}/>
                     <Redirect to={'/'}/>
                 </Switch>
             }

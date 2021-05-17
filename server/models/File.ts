@@ -1,3 +1,4 @@
+export {};
 const {model, Schema, ObjectId}= require('mongoose')
 
 const FileSchema = new  Schema({
@@ -11,4 +12,4 @@ const FileSchema = new  Schema({
     parent:{type: ObjectId, ref: 'File'},
     childs:[{type: ObjectId, ref: 'User'}],
 })
-module.exports=model('File', File)
+module.exports=model('FileSchema', FileSchema)

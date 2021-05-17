@@ -1,22 +1,26 @@
-import React from 'react';
-import {Card, Col, Container, Row} from "react-bootstrap";
-import File from "./file/File";
-import {useSelector} from "react-redux";
-import {Files} from '../../../redux/user-selector'
+import React from 'react'
+import {Card, Col, Container, Row} from 'react-bootstrap'
+import File from './file/File'
+import {useSelector} from 'react-redux'
+import {Files} from '../../../redux/selectors'
+import classes from './FileList.module.css'
+const FileList: React.FC<any> = ({view}) => {
 
-const FileList = () => {
-    const files = useSelector(state => Files(state)).map((file: any)  =>
-        <File name={file.name}
-              size={file.size}
-              data={file.data}
-              key={file._id}
-              id={file._id}
+    const files = useSelector(state => Files(state)).map((file: any) =>
+        <File key={file._id}
               file={file}
-              type={file.type}
+              view={view}
         />)
     if (files.length === 0) {
         return <h1>Папка пуста</h1>
     }
+    if(view=='grid') {
+        return (
+            <Container className={classes.body}>
+                {files}
+            </Container>
+        )
+    } else
     return (
         <Container>
             <Card>
@@ -38,8 +42,8 @@ const FileList = () => {
 
         </Container>
 
-    );
-};
+    )
+}
 
 
-export default FileList;
+export default FileList
