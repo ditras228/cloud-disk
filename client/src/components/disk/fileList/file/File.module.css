@@ -1,0 +1,14 @@
+
+.footer{
+    display: flex;
+    justify-items: right;
+    padding: 0;
+}
+.mark{
+    display: inline-block;
+    background-color: gray;
+    color: white;
+    border-radius: 6px 0 0 0;
+    margin-left: auto;
+    padding: 5px;
+}

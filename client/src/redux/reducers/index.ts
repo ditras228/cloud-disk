@@ -5,11 +5,13 @@ import userReducer from "./userReducer";
 import fileReducer from "./fileReducer";
 import appReducer from "./appReducer";
 import {useDispatch} from 'react-redux'
+import uploadReducer from './uploadReducer'
 
 const rootReducer=combineReducers({
     user: userReducer,
     file: fileReducer,
     app: appReducer,
+    uploader: uploadReducer
 })
 export type RootReducerType  =typeof rootReducer
 export type AppStateType = ReturnType<RootReducerType>

@@ -13,3 +13,12 @@ export const DirStack = (state: any)=>{
 export const Loader = (state: any)=>{
     return state.app.loader
 }
+export const IsVisible = (state: any)=>{
+    return state.uploader.isVisible
+}
+export const UploaderFiles = (state: any)=>{
+    return state.uploader.files
+}
+export const GetUser = (state: any)=>{
+    return state.user
+}

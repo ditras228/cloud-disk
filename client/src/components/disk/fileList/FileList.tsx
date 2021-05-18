@@ -5,25 +5,25 @@ import {useSelector} from 'react-redux'
 import {Files} from '../../../redux/selectors'
 import classes from './FileList.module.css'
 const FileList: React.FC<any> = ({view}) => {
-
     const files = useSelector(state => Files(state)).map((file: any) =>
         <File key={file._id}
               file={file}
               view={view}
-        />)
+        />
+    )
+
     if (files.length === 0) {
         return <h1>Папка пуста</h1>
     }
     if(view=='grid') {
         return (
-            <Container className={classes.body}>
+            <div className={classes.body}>
                 {files}
-            </Container>
+            </div>
         )
     } else
     return (
-        <Container>
-            <Card>
+            <Card >
                 <Card.Header style={{padding: '0.75rem 2.25rem'}}>
                     <Row>
                         <Col sm={1} style={{fontSize: 30}}>
@@ -36,14 +36,9 @@ const FileList: React.FC<any> = ({view}) => {
                     </Row>
                 </Card.Header>
                 <Card.Body>
-                    {files}
+                        {files}
                 </Card.Body>
             </Card>
-
-        </Container>
-
     )
 }
-
-
 export default FileList

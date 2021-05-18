@@ -8,6 +8,8 @@ import {CurrentDir, DirStack, Loader} from '../../redux/selectors'
 import CreateDirModal from '../modal/CreateDirModal'
 import {CloudUploadFill, Grid3x3GapFill, List} from 'react-bootstrap-icons'
 import classes from './Disk.module.css'
+import  { DragEvent } from 'react';
+import Uploader from './uploader/Uploader'
 
 const Disk = () => {
     const dispatch = useDispatch()
@@ -44,20 +46,21 @@ const Disk = () => {
             <Spinner animation="grow"/>
         )
     }
-    function dragEnterHandler(event: any){
-        event.preventDefault()
-        event.stopPropagination()
+    function dragEnterHandler(e: DragEvent<HTMLDivElement>){
+        e.preventDefault()
+        e.stopPropagation()
         setDragEnter(true)
     }
-    function dragLeaveHandler(event: any){
-        event.preventDefault()
-        event.stopPropagation()
+    function dragLeaveHandler(e: DragEvent<HTMLDivElement>){
+        e.preventDefault()
+        e.stopPropagation()
         setDragEnter(false)
     }
-    function dropHandler(event: any){
-        event.preventDefault()
-        event.stopPropagation()
-        let files = [...event.dataTransfer.files]
+    function dropHandler(e: DragEvent<HTMLDivElement>){
+        e.preventDefault()
+        e.stopPropagation()
+        let files = Array.from(e.dataTransfer.files)
+
         files.forEach(file => {
             dispatch(uploadFile(file, currentDir))
         })
@@ -68,8 +71,10 @@ const Disk = () => {
                 <Container style={{marginBottom: 20}}>
                     <Row>
                         <Col style={{marginBottom: 10}} sm={'auto'}>
-                            <Button style={{marginRight: 10}} onClick={() => backClickHandler()}>Назад</Button>
-                            <Button style={{marginRight: 10}} onClick={() => setShow(true)}>Создать папку</Button>
+                            <div style={{marginBottom: 10}}>
+                                <Button style={{marginRight: 10}} onClick={() => backClickHandler()}>Назад</Button>
+                                <Button style={{marginRight: 10}} onClick={() => setShow(true)}>Создать папку</Button>
+                            </div>
                             <DropdownBtn setSort={setSort}/>
                         </Col>
                         <Col/>
@@ -92,10 +97,12 @@ const Disk = () => {
                             lang="ru"
                             custom
                             multiple={true} type="file" onChange={fileUploadHandler}
+                            style={{marginBottom: 10}}
                         />
                     </Form>
                     <CreateDirModal show={show} setShow={setShow} createDirHandler={createDirHandler}/>
                     <FileList view={view}/>
+                    <Uploader/>
                 </Container>
         </div>
             :

@@ -2,6 +2,7 @@ import {baseURL, instance} from '../../components/api/api'
 import {fileReducerAction, fileReducerActionType} from '../reducers/fileReducer'
 import {appReducerAction, appReducerActionType} from '../reducers/appReducer'
 import {BaseThunkType} from '../reducers'
+import {uploadReducerActions} from '../reducers/uploadReducer'
 
 export const getFiles = (dirId: any, sort: string | null): fileThunkType  => {
     return async dispatch => {
@@ -51,6 +52,11 @@ export function uploadFile(file: any, dirId: string): fileThunkType {
             if (dirId) {
                 formData.append('parent', dirId)
             }
+            const uploadFile = {name: file.name, progress: 0, id: Date.now()}
+            // @ts-ignore
+            dispatch(uploadReducerActions.showUploader())
+            // @ts-ignore
+            dispatch(uploadReducerActions.addUploadFiles(uploadFile))
             const response = await instance.post('/files/upload', formData, {
                 headers: {Authorization: `Bearer ${localStorage.getItem('token')}`},
                 onUploadProgress: progressEvent => {
@@ -59,6 +65,8 @@ export function uploadFile(file: any, dirId: string): fileThunkType {
                     if (totalLength) {
                         let progress = Math.round((progressEvent.loaded * 100) / totalLength)
                         console.log(progress)
+                        // @ts-ignore
+                        dispatch(uploadReducerActions.changeUploadProgress({...uploadFile, progress}))
                     }
                 }
             })

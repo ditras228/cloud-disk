@@ -2,7 +2,7 @@ require('dotenv').config()
 const FileSchema = require('../models/File')
 const User = require('../models/User')
 const fs = require('fs')
-
+const uuid= require('uuid')
 const fileService = require('../services/fileService')
 
 class FileController {
@@ -145,6 +145,32 @@ class FileController {
             return res.json(files)
         } catch (e) {
             console.log(e)
+        }
+    }
+    async uploadAvatar(req, res) {
+        try {
+            const {file} = req.body
+            const user = await User.findOne(req.user.id)
+            const avatarName = uuid.v4()+'.jpg'
+            file.mv = `${req.filePath()}\\static${avatarName}`
+            user.avatar=avatarName
+            await user.save()
+            return res.json(user)
+        }catch (e){
+            console.log(e)
+            return res.json({message: 'Upload avatar error'})
+        }
+    }
+    async deleteAvatar(req, res) {
+        try {
+            const user = await User.findOne(req.user.id)
+            fs.unlinkSync(`${req.filePath}\\${user.avatar}`)
+            user.avatar = null
+            await user.save()
+            return res.json(user)
+        }catch (e){
+            console.log(e)
+            return res.json({message: 'Upload avatar error'})
         }
     }
 }

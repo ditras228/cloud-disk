@@ -41,4 +41,31 @@ export const auth =  (): userThunkType=>{
     }
 
 }
+export const uploadAvatar=(file: any): userThunkType=>{
+    return async dispatch =>{
+        try{
+            const formData = new FormData()
+            formData.append('file', file)
+            const response =  await instance.post('/avatar', formData,
+                {headers: {Authorization: `Bearer ${localStorage.getItem('token')}`}})
+            dispatch(userReducerAction.setUser(response.data))
+        }catch (e){
+            console.log(e)
+        }
+
+    }
+
+}
+export const deleteAvatar=(): userThunkType=> {
+    return async dispatch => {
+        try {
+            const response = await instance.delete('/avatar',
+                {headers: {Authorization: `Bearer ${localStorage.getItem('token')}`}})
+            dispatch(userReducerAction.setUser(response.data))
+        } catch (e) {
+            console.log(e)
+        }
+
+    }
+}
 type userThunkType = BaseThunkType<userReducerActionType>
