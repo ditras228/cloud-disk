@@ -12,4 +12,4 @@ const FileSchema = new  Schema({
     parent:{type: ObjectId, ref: 'File'},
     childs:[{type: ObjectId, ref: 'User'}],
 })
-module.exports=model('FileSchema', FileSchema)
+module.exports=model('File', FileSchema)

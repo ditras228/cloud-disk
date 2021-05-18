@@ -13,7 +13,7 @@ class FileController {
             const parentFile = await FileSchema.findOne({_id: parent})
             if (!parentFile) {
                 file.path = name
-                await fileService.createDir(file)
+                await fileService.createDir(req,file)
             } else {
                 file.path = `${req.filePath}\\${file.name}`
                 await fileService.createDir(file)
@@ -29,22 +29,27 @@ class FileController {
 
     async fetchFile(req, res) {
         try {
-            const {sort} = req.query
+            const {parent, sort} = req.query
+            let getParentId
+            if (parent!== undefined)
+            {
+                getParentId = parent.split('?')[0]
+            }
             let files
             switch (sort) {
                 case 'name':
-                    files = await FileSchema.find({user: req.user.id, parent: req.query.parent}).sort({name: 1})
+                    files = await FileSchema.find({user: req.user.id, parent: getParentId}).sort({name: 1})
                     break
                 case 'type':
-                    files = await FileSchema.find({user: req.user.id, parent: req.query.parent}).sort({type: 1})
+                    files = await FileSchema.find({user: req.user.id, parent: getParentId}).sort({type: 1})
                     break
 
                 case 'date':
-                    files = await FileSchema.find({user: req.user.id, parent: req.query.parent}).sort({date: 1})
+                    files = await FileSchema.find({user: req.user.id, parent:getParentId}).sort({date: 1})
                     break
 
                 default:
-                    files = await FileSchema.find({user: req.user.id, parent: req.query.parent})
+                    files = await FileSchema.find({user: req.user.id, parent: getParentId})
                     break
 
             }

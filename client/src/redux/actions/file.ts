@@ -3,7 +3,7 @@ import {fileReducerAction, fileReducerActionType} from '../reducers/fileReducer'
 import {appReducerAction, appReducerActionType} from '../reducers/appReducer'
 import {BaseThunkType} from '../reducers'
 
-export const getFiles = (dirId: string, sort: string | null): fileThunkType  => {
+export const getFiles = (dirId: any, sort: string | null): fileThunkType  => {
     return async dispatch => {
         try {
             // @ts-ignore

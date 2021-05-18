@@ -9,4 +9,4 @@ const UserSchema = new Schema({
     avatar: {type: String},
     files: [{type: ObjectId, ref: 'File'}],
 })
-module.exports=model('UserSchema', UserSchema)
+module.exports=model('Userx', UserSchema)

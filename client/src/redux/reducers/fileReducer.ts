@@ -1,5 +1,4 @@
 import {InferActionsTypes} from './index'
-import {appReducerAction} from './appReducer'
 
 const defaultState = {
     files: [] as Array<IFile>,

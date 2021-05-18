@@ -14,8 +14,9 @@ const FileFC: React.FC<FileProps> = ({file,view}) => {
 
     function openDirHandler() {
         if (file.type === 'dir') {
+            console.log(file)
             dispatch(fileReducerAction.pushToStack(currentDir))
-            dispatch(fileReducerAction.setCurrentDir(file.id))
+            dispatch(fileReducerAction.setCurrentDir(file._id))
         }
     }
 

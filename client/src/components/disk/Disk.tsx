@@ -20,7 +20,7 @@ const Disk = () => {
     const [dragEnter, setDragEnter] = useState(false)
     useEffect(() => {
         dispatch(getFiles(currentDir, sort))
-        console.log('sort')
+        console.log(currentDir)
     }, [currentDir, sort])
 
     function createDirHandler(name: string) {
@@ -51,12 +51,12 @@ const Disk = () => {
     }
     function dragLeaveHandler(event: any){
         event.preventDefault()
-        event.stopPropagination()
+        event.stopPropagation()
         setDragEnter(false)
     }
     function dropHandler(event: any){
         event.preventDefault()
-        event.stopPropagination()
+        event.stopPropagation()
         let files = [...event.dataTransfer.files]
         files.forEach(file => {
             dispatch(uploadFile(file, currentDir))
