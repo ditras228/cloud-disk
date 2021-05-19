@@ -25,7 +25,7 @@ const Profile = () => {
                     <Row>
                         <Col>
                             <div className={classes.container}>
-                                <img className={classes.avatar} src="http://placehold.it/150" alt=""/>
+                                <img className={classes.avatar} src={avatar} alt=""/>
                                 <div className={classes.overlay}>
                                     <Upload className={classes.text}/>
                                 </div>

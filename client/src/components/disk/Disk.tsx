@@ -20,6 +20,7 @@ const Disk = () => {
     const [sort, setSort] = useState('type')
     const [view, setView] = useState('list')
     const [dragEnter, setDragEnter] = useState(false)
+
     useEffect(() => {
         dispatch(getFiles(currentDir, sort))
         console.log(currentDir)

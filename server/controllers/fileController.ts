@@ -105,7 +105,7 @@ class FileController {
 
     async downloadFile(req, res) {
         try {
-            let path = ''
+            let path
             const file = await FileSchema.findOne({_id: req.query.id, user: req.user.id})
             if (file.parent)
                 path = `${req.filePath}\\${req.user.id}\\${file.path}\\${file.name}`
@@ -149,10 +149,11 @@ class FileController {
     }
     async uploadAvatar(req, res) {
         try {
-            const {file} = req.body
-            const user = await User.findOne(req.user.id)
+            const file = req.files.file
+            console.log(req.file)
+            const user = await User.findOne({_id: req.user.id})
             const avatarName = uuid.v4()+'.jpg'
-            file.mv = `${req.filePath()}\\static${avatarName}`
+            await file.mv (`${__dirname}\\..\\static\\${avatarName}`)
             user.avatar=avatarName
             await user.save()
             return res.json(user)
@@ -163,8 +164,8 @@ class FileController {
     }
     async deleteAvatar(req, res) {
         try {
-            const user = await User.findOne(req.user.id)
-            fs.unlinkSync(`${req.filePath}\\${user.avatar}`)
+            const user = await User.findOne({_id:req.user.id})
+            fs.unlinkSync(`${__dirname}\\..\\${user.avatar}`)
             user.avatar = null
             await user.save()
             return res.json(user)
