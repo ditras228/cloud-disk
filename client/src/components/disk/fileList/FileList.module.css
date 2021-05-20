@@ -1,11 +1,7 @@
 .body{
     display: grid;
-    grid-template-columns: repeat(auto-fit,minmax(150px, 1fr));
-    grid-row-gap: 20px;
+    grid-template-columns: repeat(auto-fill,minmax(150px, 1fr));
+    grid-gap: 10px;
 }
-.item{
-    width: 150px;
-    align-self: center;
-    justify-self: center;
-}
+
 

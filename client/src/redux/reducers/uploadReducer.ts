@@ -1,7 +1,7 @@
 import {InferActionsTypes} from './index'
 
 const defaultState = {
-    isVisible: true,
+    isVisible: false,
     files: []
 }
 export default function uploadReducer(state = defaultState, action: UploadReducerActionType) {
@@ -9,7 +9,7 @@ export default function uploadReducer(state = defaultState, action: UploadReduce
         case 'SHOW_UPLOADER':
             return {...state, isVisible: true}
         case 'HIDE_UPLOADER':
-            return {...state, isVisible: true}
+            return {...state, isVisible: false}
         case 'ADD_UPLOAD_FILES':
             return {...state, files: [...state.files, action.payload]}
         case 'REMOVE_UPLOAD_FILES':

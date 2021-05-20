@@ -2,13 +2,12 @@
     position: relative;
     width: 150px;
 }
-
 .image {
     display: block;
     width: 100%;
-    height: auto;
-}
+    border-radius: 50%;
 
+}
 .overlay {
     position: absolute;
     top: 0;
@@ -20,15 +19,15 @@
     opacity: 0;
     transition: .5s ease;
     background-color: gray;
-}
+    border-radius: 50%;
 
+}
 .container:hover .overlay {
-    opacity: 0.6;
+    opacity: 1;
 }
-
 .text {
     color: white;
-    font-size: 50px;
+    font-size: 40px;
     position: absolute;
     top: 50%;
     left: 50%;
@@ -36,4 +35,22 @@
     -ms-transform: translate(-50%, -50%);
     transform: translate(-50%, -50%);
     text-align: center;
+}
+.input{
+    display: none;
+}
+.grid{
+    display: grid;
+    grid-gap: 40px;
+    grid-template-columns: auto 1fr;
+    }
+.title{
+    font-size: 28px;
+    display: inline-block;
+}
+.desc{
+    font-size: 23px;
+    display: grid;
+    grid-template-rows: repeat(auto-fill, minmax(40px, 1fr));
+
 }

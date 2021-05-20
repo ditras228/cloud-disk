@@ -1,47 +1,57 @@
 import React from 'react'
-import {Card, Col, Container, Form, Row} from 'react-bootstrap'
+import {Card, Col, Container, Form, ListGroup, ProgressBar, Row} from 'react-bootstrap'
 import classes  from './Profile.module.css'
-import {Upload} from 'react-bootstrap-icons'
+import {Disc, DiscFill, Mailbox, Person, Upload} from 'react-bootstrap-icons'
 import {useDispatch, useSelector} from 'react-redux'
 import {uploadAvatar} from '../../redux/actions/user'
 import {GetUser} from '../../redux/selectors'
 import {baseURL} from '../api/api'
+import sizeFormat from '../utils/sizeFormat'
 const Profile = () => {
     const dispatch = useDispatch()
-    const user = useSelector(state => GetUser(state))
-    const avatar= `${baseURL}\\${user.avatar}`
+    const user = useSelector(state => GetUser(state)).currentUser
+    const diskPercent =  user.usedSpace/user.diskSpace*100
+
+    let avatar= `${baseURL}/${user.avatar}`
 
     function fileUploadHandler(e: any){
         const file = e.target.files[0]
         dispatch(uploadAvatar(file))
     }
+    if(avatar === `${baseURL}/undefined` ){
+        avatar= 'http://placehold.it/300'
+    }
+
     return (
-        <Container>
+        <Container style={{maxWidth: 900}}>
             <Card>
                 <Card.Header>
                     Профиль
                 </Card.Header>
-                <Card.Body>
-                    <Row>
-                        <Col>
-                            <div className={classes.container}>
-                                <img className={classes.avatar} src={avatar} alt=""/>
-                                <div className={classes.overlay}>
-                                    <Upload className={classes.text}/>
-                                </div>
-                                <Form.File
-                                    id="custom-file-translate-scss"
-                                    label="Загрузить файл"
+                <Card.Body style={{padding: 50}}>
+                        <div className={classes.grid}>
+                                <label htmlFor="avatar_input">
+                                    <div className={classes.container}>
+                                        <img className={classes.image} src={avatar} alt=""/>
+                                        <div className={classes.overlay}>
+                                            <Upload className={classes.text}/>
+                                        </div>
+                                    </div>
+
+                                </label>
+
+                                <input
+                                    id="avatar_input"
                                     lang="ru"
-                                    custom
-                                    multiple={true} type="file" onChange={fileUploadHandler}
+                                    multiple={true} type="file" accept={'image/*'} onChange={fileUploadHandler}
+                                    className={classes.input}
                                 />
-                            </div>
+                        <Col className={classes.desc}>
+                                <div className={classes.title}><Mailbox/> {user.email}</div>
+                                <div><DiscFill/> {sizeFormat(user.usedSpace)}/{sizeFormat(user.diskSpace)}</div>
+                                <ProgressBar  striped variant="success" now={diskPercent} />
                         </Col>
-                        <Col>
-                            {user.name}
-                        </Col>
-                    </Row>
+                        </div>
                 </Card.Body>
             </Card>
         </Container>

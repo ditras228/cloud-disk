@@ -1,17 +1,19 @@
-import React from 'react'
-import {Button, ButtonGroup, Card, Col, Container, Row} from 'react-bootstrap'
+import React, {useState} from 'react'
+import {Button, ButtonGroup, Card, Col, Container, Fade, Row} from 'react-bootstrap'
 import {useDispatch, useSelector} from 'react-redux'
 import {deleteFile, downloadFile} from '../../../../redux/actions/file'
 import {CloudDownloadFill, FileEarmark, Folder, TrashFill} from 'react-bootstrap-icons'
 import {IFile} from '../../../../types/types'
 import {CurrentDir} from '../../../../redux/selectors'
 import {fileReducerAction} from '../../../../redux/reducers/fileReducer'
-import classes from '../FileList.module.css'
 import sizeFormat from '../../../utils/sizeFormat'
-import classesF from './File.module.css'
-const FileFC: React.FC<FileProps> = ({file, view}) => {
+import classes from './File.module.css'
+
+const FileFC: React.FC<FileProps> = ({id,file, view}) => {
     const dispatch = useDispatch()
     const currentDir = useSelector(state => CurrentDir(state))
+    const [fade, setFade] = useState(false)
+    let even
 
     function openDirHandler() {
         if (file.type === 'dir') {
@@ -39,38 +41,46 @@ const FileFC: React.FC<FileProps> = ({file, view}) => {
         } else
             return name
     }
-
+    setTimeout(()=>setFade(true), 0);
     if (view == 'grid') {
         return (
+            <Fade in={fade}>
             <Card className={classes.item}>
-                <Card.Header>
-                    {
-                        file.type == 'dir'
-                        ?file.name
-                        :getName(file.name)[0].slice(0,9)+'...'
-                    }
-                </Card.Header>
-
-
-                <Card.Body style={{textAlign: 'center', fontSize: 50}}>
-                    {
-                        file.type == 'dir' ? <Folder/> : <FileEarmark/>
-                    }
-                </Card.Body>
-                <Card.Footer className={classesF.footer}>
-                    <mark className={classesF.mark}>
+                <div className={classes.body}>
+                    <div className={classes.name}>
                         {
                             file.type == 'dir'
-                            ?'dir'
-                            :getName(file.name)[1]
+                                ? file.name
+                                : getName(file.name)[0].slice(0, 9) + '...'
                         }
-                    </mark>
-                </Card.Footer>
+                    </div>
+                    <div className={classes.i}>
+                        {
+                            file.type == 'dir' ? <Folder/> : <FileEarmark/>
+                        }
+                    </div>
+                </div>
+
+                <mark className={classes.mark}>
+                    {
+                        file.type == 'dir'
+                            ? 'dir'
+                            : getName(file.name)[1]
+                    }
+                </mark>
+
             </Card>
+            </Fade>
         )
     }
+    if(id%2){
+        even = classes.item_list_2
+    }else{
+        even = classes.item_list
+    }
     return (
-        <Container onClick={() => openDirHandler()} style={{marginBottom: 10}}>
+        <Fade in={fade}>
+        <Container onClick={() => openDirHandler()} className={even} draggable={true}>
             <Row>
                 <Col sm={1} style={{fontSize: 30}}>
                     {
@@ -95,12 +105,14 @@ const FileFC: React.FC<FileProps> = ({file, view}) => {
                     </Col>}
             </Row>
         </Container>
+        </Fade>
     )
 }
 
 export default FileFC
 
 type FileProps = {
+    id:number,
     file: IFile,
     view: string
 }

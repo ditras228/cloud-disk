@@ -22,3 +22,7 @@ export const UploaderFiles = (state: any)=>{
 export const GetUser = (state: any)=>{
     return state.user
 }
+export const GetIsMobile = (state: any)=>{
+    return state.user.isMobile
+}
+

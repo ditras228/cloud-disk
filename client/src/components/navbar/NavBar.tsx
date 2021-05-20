@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react'
 import {Button, Form, FormControl, InputGroup, Navbar} from "react-bootstrap";
 import {useHistory} from "react-router";
 import {useDispatch, useSelector} from "react-redux";
@@ -7,6 +7,7 @@ import {appReducerAction} from "../../redux/reducers/appReducer";
 import {Disc, Search} from "react-bootstrap-icons";
 import {CurrentDir, IsAuth} from '../../redux/selectors'
 import {userReducerAction} from '../../redux/reducers/userReducer'
+import classes from './NavBar.module.css'
 
 const NavBar = () => {
     const history = useHistory()
@@ -35,13 +36,13 @@ const NavBar = () => {
 
     return (
         <Navbar bg="light" expand="lg" style={{marginBottom: 20}}>
-            <Navbar.Brand href="#home"><Disc/> Cloud-disk</Navbar.Brand>
+            <Navbar.Brand className={classes.brand}><Disc className={classes.disc}/>MERNCloudDisk</Navbar.Brand>
             <Navbar.Toggle aria-controls="basic-navbar-nav"/>
 
             <Navbar.Collapse id="basic-navbar-nav">
-                <Form className="d-flex" style={{marginLeft: "auto", width: 600}}>
-                    {isAuth &&<InputGroup>
-                        <InputGroup.Prepend>
+                <Form  className={classes.search}>
+                    {isAuth &&<InputGroup >
+                        <InputGroup.Prepend >
                             <InputGroup.Text id="basic-addon1">
                                 <Search/>
                             </InputGroup.Text>
@@ -49,11 +50,11 @@ const NavBar = () => {
                         <FormControl
                             type="search"
                             placeholder="Поиск"
-
                             className="mr-2"
                             aria-label="Search"
                             value={searchName}
                             onChange={e => searchChangeHandler(e)}
+                            onClick={()=>history.push('/')}
                         />
                     </InputGroup>}
                 </Form>
@@ -68,7 +69,7 @@ const NavBar = () => {
                                         onClick={() => history.push('/registration')}>
                         Регистрация
                     </Button>}
-                    {isAuth && <Button variant="outline-dark" style={{marginRight: 10}}
+                    {isAuth &&<Button variant="outline-dark" style={{marginRight: 10}}
                                        onClick={() => history.push('/profile')}>
                         Профиль
                     </Button>}

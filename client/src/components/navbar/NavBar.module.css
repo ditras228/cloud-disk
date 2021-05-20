@@ -1,0 +1,27 @@
+.search{
+    position: absolute;
+    left: 0;
+    right: 0;
+    margin-left: auto;
+    margin-right: auto;
+    width: 600px;
+}
+.disc{
+    font-size: 25px;
+    align-self: center;
+    margin-right: 7px;
+    padding-bottom: 3px;
+}
+.brand{
+    display: flex;
+    font-size: 23px;
+
+}
+@media  (max-width: 992px) {
+    .search{
+        position: static;
+        width: 100%;
+        padding-top: 10px;
+        padding-bottom: 10px;
+    }
+}
