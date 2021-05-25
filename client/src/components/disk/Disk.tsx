@@ -4,7 +4,7 @@ import {createDir, getFiles, uploadFile} from '../../redux/actions/file'
 import FileList from './fileList/FileList'
 import {Button, Col, Container, Dropdown, Form, Row, Spinner} from 'react-bootstrap'
 import {fileReducerAction} from '../../redux/reducers/fileReducer'
-import {CurrentDir, DirStack, GetIsMobile, Loader} from '../../redux/selectors'
+import {CurrentDir, DirStack, GetIsMobile, GetUploadFilesByDrop, Loader} from '../../redux/selectors'
 import CreateDirModal from '../modal/CreateDirModal'
 import {CloudUploadFill, Grid3x3GapFill, List} from 'react-bootstrap-icons'
 import classes from './Disk.module.css'
@@ -24,7 +24,7 @@ const Disk = () => {
     const [view, setView] = useState('list')
     const [dragEnter, setDragEnter] = useState(false)
     const [width, setWidth] = useState(0);
-
+    const byDrop = useSelector(GetUploadFilesByDrop)
     const isMobile = useSelector(state => GetIsMobile(state))
 
     useEffect(() => {
@@ -93,8 +93,11 @@ const Disk = () => {
     if (loader == true) {
         return <LoaderFC/>
     }
-    return (!dragEnter ?
-            <div onDragEnter={dragEnterHandler} onDragLeave={dragLeaveHandler} onDragOver={dragEnterHandler}>
+    console.log(byDrop)
+    return (!dragEnter?
+            <div onDragEnter={e=> byDrop? dragEnterHandler(e): ()=>{}}
+                 onDragLeave={e=> byDrop?dragLeaveHandler(e):()=>{}}
+                 onDragOver={e=> byDrop?dragEnterHandler(e): ()=>{}}>
                 <Container style={{marginBottom: 20}}>
                     <div className={classes.tools}>
                         <Button onClick={backClickHandler}>Назад</Button>

@@ -78,9 +78,34 @@ const FileFC: React.FC<FileProps> = ({id,file, view}) => {
     }else{
         even = classes.item_list
     }
+
+    function dragOverHandler(e: any) {
+        e.stopPropagation()
+            e.currentTarget.style.boxShadow = '0px 4px 8px gray'
+    }
+
+    function dragLeaveHandler(e: any) {
+        e.currentTarget.style.boxShadow = 'none'
+    }
+
+    function dragStartHandler(e: any) {
+
+    }
+
+    function dragEndHandler(e: any) {
+        e.currentTarget.style.boxShadow = 'none'
+
+    }
+
     return (
         <Fade in={fade}>
-        <Container onClick={() => openDirHandler()} className={even} draggable={true}>
+        <Container
+            onClick={() => openDirHandler()}
+            onDragOver={(e:any)=>dragOverHandler(e) }
+            onDragLeave={(e:any)=>dragLeaveHandler(e) }
+            onDragStart={(e:any)=>dragStartHandler(e) }
+            onDragEnd={(e:any)=>dragEndHandler(e) }
+            className={'item'} draggable={true}>
             <Row>
                 <Col sm={1} style={{fontSize: 30}}>
                     {
@@ -90,9 +115,6 @@ const FileFC: React.FC<FileProps> = ({id,file, view}) => {
                 <Col style={{display: 'flex', alignItems: 'center'}} sm={5}>{file.name}</Col>
                 <Col style={{display: 'flex', alignItems: 'center'}} sm={2}>{file.data.slice(0, 10)}</Col>
                 <Col style={{display: 'flex', alignItems: 'center'}} sm={2}> {sizeFormat(file.size)}</Col>
-                {file.type === 'dir'
-                    ? <></>
-                    :
                     <Col sm={2}>
                         <ButtonGroup>
                             <Button onClick={e => deleteClickHandler(e)}>
@@ -102,7 +124,7 @@ const FileFC: React.FC<FileProps> = ({id,file, view}) => {
                                 <CloudDownloadFill/>
                             </Button>
                         </ButtonGroup>
-                    </Col>}
+                    </Col>
             </Row>
         </Container>
         </Fade>

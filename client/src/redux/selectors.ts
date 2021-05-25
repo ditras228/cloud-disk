@@ -26,3 +26,6 @@ export const GetIsMobile = (state: any)=>{
     return state.user.isMobile
 }
 
+export const GetUploadFilesByDrop = (state: any)=>{
+    return state.uploader.UploadFilesByDrop
+}

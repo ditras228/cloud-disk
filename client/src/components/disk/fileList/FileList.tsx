@@ -5,6 +5,8 @@ import {useDispatch, useSelector} from 'react-redux'
 import {Files} from '../../../redux/selectors'
 import classes from './FileList.module.css'
 const FileList: React.FC<any> = ({view, setView}) => {
+
+
     const files = useSelector(state => Files(state)).map((file: any, index: number) =>
         <File key={index}
               id={index}

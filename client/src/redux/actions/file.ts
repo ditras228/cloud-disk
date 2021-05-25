@@ -79,7 +79,7 @@ export function uploadFile(file: any, dirId: string): fileThunkType {
 }
 
 export async function downloadFile(file: any) {
-    const response = await fetch(`${baseURL}/files?id=${file._id}`, {
+    const response = await fetch(`${baseURL}/api/files/download?id=${file._id}`, {
         headers: {
             Authorization: `Bearer ${localStorage.getItem('token')}`
         }
