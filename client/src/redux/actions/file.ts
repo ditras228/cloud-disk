@@ -99,9 +99,17 @@ export async function downloadFile(file: any) {
 export function deleteFile(file: any): fileThunkType {
     return async dispatch => {
         try {
-            const response = await instance.delete(`/files?id=${file._id}`, {
-                headers: {Authorization: `Bearer ${localStorage.getItem('token')}`},
-            })
+            let response: any
+            if (file.type==='dir'){
+                response= await instance.delete(`/files/delFol?id=${file._id}`, {
+                    headers: {Authorization: `Bearer ${localStorage.getItem('token')}`},
+                })
+            }else {
+                response= await instance.delete(`/files?id=${file._id}`, {
+                    headers: {Authorization: `Bearer ${localStorage.getItem('token')}`},
+                })
+            }
+
             dispatch(fileReducerAction.deleteFileAction(file._id))
             alert(response.data.message)
         } catch (e) {

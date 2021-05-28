@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React from 'react'
 import {Alert, Button, Card, Container, Form} from 'react-bootstrap'
 import {registration} from '../../redux/actions/user'
 import {useHistory} from 'react-router'
@@ -44,7 +44,7 @@ const Registration = () => {
                                 value={formik.values.email}
                                 onChange={formik.handleChange}
                                 type="email"
-                                          placeholder="Enter email"/>
+                                placeholder="Email"/>
                         </Form.Group>
                         {formik.errors.email && formik.touched.email ? (
                             <Alert variant={'danger'}>{formik.errors.email}</Alert>
@@ -55,8 +55,15 @@ const Registration = () => {
                                 value={formik.values.password}
                                 onChange={formik.handleChange}
                                 type="password"
-                                placeholder="Password"/>
-
+                                placeholder="Пороль"/>
+                        </Form.Group>
+                        <Form.Group controlId="formBasicPassword">
+                        <Form.Control
+                                name={'confPassword'}
+                                value={formik.values.password}
+                                onChange={formik.handleChange}
+                                type="password"
+                                placeholder="Повторите пороль"/>
                         </Form.Group>
                         {formik.errors.password && formik.touched.password ? (
                             <Alert variant={'danger'}>{formik.errors.password}</Alert>

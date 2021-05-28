@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React from 'react';
 import {Alert, Button, Card, Container, Form} from 'react-bootstrap'
 import {useDispatch} from "react-redux";
 import {login} from "../../redux/actions/user";
@@ -41,8 +41,7 @@ const Auth = () => {
                                 value={formik.values.email}
                                 onChange={formik.handleChange}
                                 type="email"
-                                placeholder="Enter email"
-                            />
+                                placeholder="Email"/>
                         </Form.Group>
                         {formik.errors.email && formik.touched.email ? (
                             <Alert variant={'danger'}>{formik.errors.email}</Alert>
@@ -53,8 +52,7 @@ const Auth = () => {
                                 value={formik.values.password}
                                 onChange={formik.handleChange}
                                 type="password"
-                                placeholder="Password"
-                            />
+                                placeholder="Пороль"/>
                         </Form.Group>
                         {formik.errors.password && formik.touched.password ? (
                             <Alert variant={'danger'}>{formik.errors.password}</Alert>

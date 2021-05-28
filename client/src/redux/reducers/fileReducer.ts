@@ -19,6 +19,7 @@ export default function fileReducer(state = defaultState, action:fileReducerActi
             return {...state, dirStack: [...state.dirStack, action.payload]}
         case 'DELETE_FILE':
             return {...state, files: [...state.files.filter(file => file._id != action.payload)]}
+
         default:
             return state
     }
