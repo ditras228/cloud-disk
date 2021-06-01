@@ -2,7 +2,7 @@ import {InferActionsTypes} from './index'
 
 const defaultState = {
     isVisible: false,
-    UploadFilesByDrop: false,
+    UploadFilesByDrop: true,
     files: []
 }
 export default function uploadReducer(state = defaultState, action: UploadReducerActionType) {

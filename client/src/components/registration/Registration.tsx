@@ -4,6 +4,8 @@ import {registration} from '../../redux/actions/user'
 import {useHistory} from 'react-router'
 import {useFormik} from 'formik'
 import * as Yup from 'yup'
+import {useDispatch, useSelector} from 'react-redux'
+import {GetError} from '../../redux/selectors'
 
 const DisplayingErrorMessagesSchema = Yup.object().shape({
     password: Yup.string()
@@ -11,19 +13,24 @@ const DisplayingErrorMessagesSchema = Yup.object().shape({
         .max(12, 'Too Long!')
         .required('Required'),
     email: Yup.string().email('Invalid email').required('Required'),
+    passwordConfirmation: Yup.string()
+        .oneOf([Yup.ref('password'), null], 'Passwords must match')
+
 });
 
 const Registration = () => {
-    const history = useHistory()
+    const error = useSelector(state=>GetError(state))
+    const dispatch = useDispatch()
 
     const formik = useFormik({
             initialValues:{
                 email: '',
                 password: '',
+                passwordConfirmation: ''
             },
             validationSchema: DisplayingErrorMessagesSchema,
             onSubmit: values=>{
-                registration(values.email, values.password).then(()=>history.push('/login'))
+               dispatch(registration(values.email, values.password))
 
             }
 
@@ -57,16 +64,22 @@ const Registration = () => {
                                 type="password"
                                 placeholder="Пороль"/>
                         </Form.Group>
+                        {formik.errors.password && formik.touched.password ? (
+                            <Alert variant={'danger'}>{formik.errors.password}</Alert>
+                        ) : null}
                         <Form.Group controlId="formBasicPassword">
                         <Form.Control
-                                name={'confPassword'}
-                                value={formik.values.password}
+                                name={'passwordConfirmation'}
+                                value={formik.values.passwordConfirmation}
                                 onChange={formik.handleChange}
                                 type="password"
                                 placeholder="Повторите пороль"/>
                         </Form.Group>
-                        {formik.errors.password && formik.touched.password ? (
-                            <Alert variant={'danger'}>{formik.errors.password}</Alert>
+                        {formik.errors.passwordConfirmation && formik.touched.passwordConfirmation ? (
+                            <Alert variant={'danger'}>{formik.errors.passwordConfirmation}</Alert>
+                        ) : null}
+                        {error ? (
+                            <Alert variant={'danger'}>{error}</Alert>
                         ) : null}
                         <Button size={"lg"} block variant="primary" type="submit">
                             Регистрация

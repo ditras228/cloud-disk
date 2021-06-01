@@ -29,3 +29,6 @@ export const GetIsMobile = (state: any)=>{
 export const GetUploadFilesByDrop = (state: any)=>{
     return state.uploader.UploadFilesByDrop
 }
+export const GetError = (state: any)=>{
+    return state.app.error
+}

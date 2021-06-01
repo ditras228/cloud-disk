@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, {useEffect, useState} from 'react'
 import {Button, ButtonGroup, Card, Col, Container, Fade, Row} from 'react-bootstrap'
 import {useDispatch, useSelector} from 'react-redux'
 import {deleteFile, downloadFile} from '../../../../redux/actions/file'
@@ -81,19 +81,22 @@ const FileFC: React.FC<FileProps> = ({id,file, view}) => {
 
     function dragOverHandler(e: any) {
         e.stopPropagation()
-            e.currentTarget.style.boxShadow = '0px 4px 8px gray'
+        e.currentTarget.style.border='2px solid gray'
     }
 
     function dragLeaveHandler(e: any) {
-        e.currentTarget.style.boxShadow = 'none'
+        e.currentTarget.style.border='2px solid transparent'
+
     }
 
     function dragStartHandler(e: any) {
+        e.currentTarget.style.border='2px solid red'
 
     }
 
     function dragEndHandler(e: any) {
-        e.currentTarget.style.boxShadow = 'none'
+        e.currentTarget.style.border='2px solid transparent'
+
 
     }
 

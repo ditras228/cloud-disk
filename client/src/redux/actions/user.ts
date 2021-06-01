@@ -1,16 +1,21 @@
 import {instance} from '../../components/api/api'
 import {userReducerAction, userReducerActionType} from '../reducers/userReducer'
 import {BaseThunkType} from '../reducers'
-import {GetUser} from '../selectors'
+import {appReducerAction} from '../reducers/appReducer'
 
-export const registration = async (email: string, password: string) => {
-    try {
-        await instance.post('auth/registration/', {
-            email,
-            password
-        })
-    } catch (e) {
-        console.log(e)
+export const registration =  (email: string, password: string): userThunkType => {
+    return async dispatch => {
+        try {
+            const response = await instance.post('auth/registration/', {
+                email,
+                password
+            })
+            dispatch(userReducerAction.setUser(response.data))
+        } catch (e) {
+            console.log(e)
+            // @ts-ignore
+            dispatch(appReducerAction.error('Пользователь с таким email уже существует'))
+        }
     }
 }
 export const login = (email: string, password: string): userThunkType => {
@@ -24,7 +29,11 @@ export const login = (email: string, password: string): userThunkType => {
             dispatch(userReducerAction.setUser(response.data))
         } catch (e) {
             console.log(e)
+            // @ts-ignore
+            dispatch(appReducerAction.error('Неверный логин/пороль'))
         }
+
+
     }
 
 }

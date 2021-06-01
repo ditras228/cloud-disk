@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react'
 import {useDispatch, useSelector} from 'react-redux'
 import {createDir, getFiles, uploadFile} from '../../redux/actions/file'
 import FileList from './fileList/FileList'
-import {Button, Col, Container, Dropdown, Form, Row, Spinner} from 'react-bootstrap'
+import {Alert, Button, Col, Container, Dropdown, Form, Row, Spinner} from 'react-bootstrap'
 import {fileReducerAction} from '../../redux/reducers/fileReducer'
 import {CurrentDir, DirStack, GetIsMobile, GetUploadFilesByDrop, Loader} from '../../redux/selectors'
 import CreateDirModal from '../modal/CreateDirModal'
@@ -26,6 +26,8 @@ const Disk = () => {
     const [width, setWidth] = useState(0);
     const byDrop = useSelector(GetUploadFilesByDrop)
     const isMobile = useSelector(state => GetIsMobile(state))
+    const folderInput= React.useRef(null)
+
 
     useEffect(() => {
         dispatch(getFiles(currentDir, sort))
@@ -62,8 +64,9 @@ const Disk = () => {
 
     function fileUploadHandler(event: { target: { files: any } }) {
         const files = [...event.target.files]
+        console.log(files)
         files.forEach(file => {
-            dispatch(uploadFile(file, currentDir))
+                dispatch(uploadFile(file, currentDir))
         })
     }
 
@@ -84,9 +87,10 @@ const Disk = () => {
         e.stopPropagation()
         let files = Array.from(e.dataTransfer.files)
 
+        console.log(files)
         files.forEach(file => {
-            dispatch(uploadFile(file, currentDir))
-            dispatch(uploadReducerActions.showUploader())
+                dispatch(uploadFile(file, currentDir))
+                dispatch(uploadReducerActions.showUploader())
         })
         setDragEnter(false)
     }
@@ -127,7 +131,10 @@ const Disk = () => {
                             label="Загрузить файл"
                             lang="ru"
                             custom
+                            webkitdirectory={''} directory={''}
                             multiple={true} type="file" onChange={fileUploadHandler}
+                            ref={folderInput}
+
                         />
                     </Form>
                     <CreateDirModal show={show} setShow={setShow} createDirHandler={createDirHandler}/>
@@ -142,6 +149,13 @@ const Disk = () => {
             </div>
     )
 
+}
+declare module 'react' {
+    interface HTMLAttributes<T> extends AriaAttributes, DOMAttributes<T> {
+        // extends React's HTMLAttributes
+        directory?: string;        // remember to make these attributes optional....
+        webkitdirectory?: string;
+    }
 }
 const DropdownBtn: React.FC<IDropDownBtnProps> = ({setSort}) => {
     return (

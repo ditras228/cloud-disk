@@ -1,9 +1,10 @@
 import React from 'react';
 import {Alert, Button, Card, Container, Form} from 'react-bootstrap'
-import {useDispatch} from "react-redux";
+import {useDispatch, useSelector} from 'react-redux'
 import {login} from "../../redux/actions/user";
 import {useFormik} from 'formik'
 import * as Yup from 'yup';
+import {GetError} from '../../redux/selectors'
 const DisplayingErrorMessagesSchema = Yup.object().shape({
     password: Yup.string()
         .min(3, 'Too Short!')
@@ -13,6 +14,7 @@ const DisplayingErrorMessagesSchema = Yup.object().shape({
 });
 const Auth = () => {
     const dispatch = useDispatch()
+    const error = useSelector(state=>GetError(state))
 
     const formik = useFormik({
         initialValues:{
@@ -56,6 +58,9 @@ const Auth = () => {
                         </Form.Group>
                         {formik.errors.password && formik.touched.password ? (
                             <Alert variant={'danger'}>{formik.errors.password}</Alert>
+                        ) : null}
+                        {error ? (
+                            <Alert variant={'danger'}>{error}</Alert>
                         ) : null}
                         <Button size={"lg"} block variant="primary" type="submit">
                             Войти
