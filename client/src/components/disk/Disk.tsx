@@ -65,9 +65,8 @@ const Disk = () => {
     function fileUploadHandler(event: { target: { files: any } }) {
         const files = [...event.target.files]
         console.log(files)
-        files.forEach(file => {
-                dispatch(uploadFile(file, currentDir))
-        })
+        dispatch(uploadFile(files, currentDir))
+
     }
 
     function dragEnterHandler(e: DragEvent<HTMLDivElement>) {
@@ -88,10 +87,8 @@ const Disk = () => {
         let files = Array.from(e.dataTransfer.files)
 
         console.log(files)
-        files.forEach(file => {
-                dispatch(uploadFile(file, currentDir))
-                dispatch(uploadReducerActions.showUploader())
-        })
+        dispatch(uploadFile(files, currentDir))
+        dispatch(uploadReducerActions.showUploader())
         setDragEnter(false)
     }
     if (loader == true) {

@@ -3,8 +3,9 @@ import {fileReducerAction, fileReducerActionType} from '../reducers/fileReducer'
 import {appReducerAction, appReducerActionType} from '../reducers/appReducer'
 import {BaseThunkType} from '../reducers'
 import {uploadReducerActions} from '../reducers/uploadReducer'
+import {array} from 'yup'
 
-export const getFiles = (dirId: any, sort: string | null): fileThunkType  => {
+export const getFiles = (dirId: any, sort: string | null): fileThunkType => {
     return async dispatch => {
         try {
             // @ts-ignore
@@ -43,22 +44,30 @@ export const createDir = (dirId: string, name: string): fileThunkType => {
         dispatch(fileReducerAction.addFile(response.data))
     }
 }
-
-export function uploadFile(file: any, dirId: string): fileThunkType {
+export function uploadFile(files: Array<any> , dirId: string): fileThunkType {
     return async dispatch => {
         try {
+            let uploadFile: { name: string; progress: number; id: number } | null = null
+
             const formData = new FormData()
-            formData.append('file', file)
+            files.map(file=>{
+               formData.append('file', file)
+               formData.append('webkitRelativePath', file.webkitRelativePath)
+               uploadFile = {name: file.name, progress: 0, id: Date.now()}
+            })
+
             if (dirId) {
                 formData.append('parent', dirId)
             }
-            const uploadFile = {name: file.name, progress: 0, id: Date.now()}
+
             // @ts-ignore
             dispatch(uploadReducerActions.showUploader())
             // @ts-ignore
             dispatch(uploadReducerActions.addUploadFiles(uploadFile))
             const response = await instance.post('/files/upload', formData, {
                 headers: {Authorization: `Bearer ${localStorage.getItem('token')}`},
+
+
                 onUploadProgress: progressEvent => {
                     const totalLength = progressEvent.lengthComputable ? progressEvent.total : progressEvent.target.getResponseHeader('content-length') || progressEvent.target.getResponseHeader('x-decompressed-content-length')
                     console.log('total', totalLength)
@@ -100,12 +109,12 @@ export function deleteFile(file: any): fileThunkType {
     return async dispatch => {
         try {
             let response: any
-            if (file.type==='dir'){
-                response= await instance.delete(`/files/delFol?id=${file._id}`, {
+            if (file.type === 'dir') {
+                response = await instance.delete(`/files/delFol?id=${file._id}`, {
                     headers: {Authorization: `Bearer ${localStorage.getItem('token')}`},
                 })
-            }else {
-                response= await instance.delete(`/files?id=${file._id}`, {
+            } else {
+                response = await instance.delete(`/files?id=${file._id}`, {
                     headers: {Authorization: `Bearer ${localStorage.getItem('token')}`},
                 })
             }
@@ -118,7 +127,7 @@ export function deleteFile(file: any): fileThunkType {
     }
 }
 
-export function searchFiles(search: any ): fileThunkType | appThunkType {
+export function searchFiles(search: any): fileThunkType | appThunkType {
     return async dispatch => {
         try {
             const response = await instance.get(`/files/search?search=${search}`, {
