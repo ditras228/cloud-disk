@@ -21,6 +21,4 @@ export const useAppDispatch = () => useDispatch<AppDispatch>() // Export a hook 
 type PropertiesType<T> = T extends {[key: string]: infer U} ? U: never
 export type InferActionsTypes
     <T extends {[key: string]: (...args: any[])=> any}> = ReturnType<PropertiesType<T>>
-export type BaseThunkType
-    <A extends Action, R= Promise<void>> = ThunkAction<R, AppStateType, unknown, A>
 export const store= createStore(rootReducer, composeWithDevTools(applyMiddleware(thunk)))

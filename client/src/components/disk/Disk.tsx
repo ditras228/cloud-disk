@@ -1,18 +1,16 @@
-import React, {useEffect, useState} from 'react'
+import React, {DOMAttributes, useEffect, useState} from 'react'
 import {useDispatch, useSelector} from 'react-redux'
 import {createDir, getFiles, uploadFile} from '../../redux/actions/file'
 import FileList from './fileList/FileList'
-import {Alert, Button, Col, Container, Dropdown, Form, Row, Spinner} from 'react-bootstrap'
-import {fileReducerAction} from '../../redux/reducers/fileReducer'
+import {Button, Container, Dropdown, Form} from 'react-bootstrap'
 import {CurrentDir, DirStack, GetIsMobile, GetUploadFilesByDrop, Loader} from '../../redux/selectors'
 import CreateDirModal from '../modal/CreateDirModal'
 import {CloudUploadFill, Grid3x3GapFill, List} from 'react-bootstrap-icons'
-import classes from './Disk.module.css'
 import {DragEvent} from 'react'
 import Uploader from './uploader/Uploader'
-import {uploadReducerActions} from '../../redux/reducers/uploadReducer'
-import {userReducerAction} from '../../redux/reducers/userReducer'
 import LoaderFC from '../loader/LoaderFC'
+import classes from './Disk.module.css'
+import {actions} from '../../redux/actions/actions'
 
 const Disk = () => {
     const dispatch = useDispatch()
@@ -45,10 +43,10 @@ const Disk = () => {
 
     useEffect(() => {
         if (window.innerWidth < 1000) {
-            dispatch(userReducerAction.setMobile(true))
+            dispatch(actions.user.setMobile(true))
             setView('grid')
         }else{
-            dispatch(userReducerAction.setMobile(false))
+            dispatch(actions.user.setMobile(false))
             setView('list')
         }
     }, [window.innerWidth])
@@ -59,7 +57,7 @@ const Disk = () => {
 
     function backClickHandler() {
         const backDirId = dirStack.pop()
-        dispatch(fileReducerAction.setCurrentDir(backDirId))
+        dispatch(actions.file.setCurrentDir(backDirId))
     }
 
     function fileUploadHandler(event: { target: { files: any } }) {
@@ -88,13 +86,12 @@ const Disk = () => {
 
         console.log(files)
         dispatch(uploadFile(files, currentDir))
-        dispatch(uploadReducerActions.showUploader())
+        dispatch(actions.upload.showUploader())
         setDragEnter(false)
     }
     if (loader == true) {
         return <LoaderFC/>
     }
-    console.log(byDrop)
     return (!dragEnter?
             <div onDragEnter={e=> byDrop? dragEnterHandler(e): ()=>{}}
                  onDragLeave={e=> byDrop?dragLeaveHandler(e):()=>{}}
@@ -121,7 +118,6 @@ const Disk = () => {
                         </div>
 
                     </div>
-
                     <Form className={classes.uploadBtn}>
                         <Form.File
                             id="custom-file-translate-scss"
@@ -131,7 +127,6 @@ const Disk = () => {
                             webkitdirectory={''} directory={''}
                             multiple={true} type="file" onChange={fileUploadHandler}
                             ref={folderInput}
-
                         />
                     </Form>
                     <CreateDirModal show={show} setShow={setShow} createDirHandler={createDirHandler}/>
@@ -149,8 +144,7 @@ const Disk = () => {
 }
 declare module 'react' {
     interface HTMLAttributes<T> extends AriaAttributes, DOMAttributes<T> {
-        // extends React's HTMLAttributes
-        directory?: string;        // remember to make these attributes optional....
+        directory?: string;
         webkitdirectory?: string;
     }
 }

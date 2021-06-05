@@ -36,7 +36,7 @@ const NavBar = () => {
 
     return (
         <Navbar bg="light" expand="lg" style={{marginBottom: 20}}>
-            <Navbar.Brand className={classes.brand}><Disc className={classes.disc}/>MERNCloudDisk</Navbar.Brand>
+            <Navbar.Brand className={classes.brand}><Disc className={classes.disc}/>MERNDisk</Navbar.Brand>
             <Navbar.Toggle aria-controls="basic-navbar-nav"/>
 
             <Navbar.Collapse id="basic-navbar-nav">
@@ -65,7 +65,7 @@ const NavBar = () => {
                                         onClick={() => history.push('/login')}>
                         Войти
                     </Button>}
-                    {!isAuth && <Button variant="outline-success"
+                    {!isAuth && <Button variant="outline-danger"
                                         onClick={() => history.push('/registration')}>
                         Регистрация
                     </Button>}

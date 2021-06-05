@@ -1,25 +1,23 @@
 import {instance} from '../../components/api/api'
-import {userReducerAction, userReducerActionType} from '../reducers/userReducer'
-import {BaseThunkType} from '../reducers'
+import {userReducerAction} from '../reducers/userReducer'
 import {appReducerAction} from '../reducers/appReducer'
 
-export const registration =  (email: string, password: string): userThunkType => {
-    return async dispatch => {
+export const registration =  (email: string, password: string) => {
+    return async (dispatch: any)  => {
         try {
             const response = await instance.post('auth/registration/', {
                 email,
                 password
             })
-            dispatch(userReducerAction.setUser(response.data))
+                
         } catch (e) {
             console.log(e)
-            // @ts-ignore
             dispatch(appReducerAction.error('Пользователь с таким email уже существует'))
         }
     }
 }
-export const login = (email: string, password: string): userThunkType => {
-    return async dispatch => {
+export const login = (email: string, password: string) => {
+    return async (dispatch: any) => {
         try {
             const response = await instance.post('auth/login', {
                 email,
@@ -29,7 +27,6 @@ export const login = (email: string, password: string): userThunkType => {
             dispatch(userReducerAction.setUser(response.data))
         } catch (e) {
             console.log(e)
-            // @ts-ignore
             dispatch(appReducerAction.error('Неверный логин/пороль'))
         }
 
@@ -37,13 +34,15 @@ export const login = (email: string, password: string): userThunkType => {
     }
 
 }
-export const auth = (): userThunkType => {
-    return async dispatch => {
+export const auth = () => {
+    return async (dispatch: any) => {
         try {
             const response = await instance.get('auth/auth',
                 {headers: {Authorization: `Bearer ${localStorage.getItem('token')}`}})
             dispatch(userReducerAction.setUser(response.data))
             localStorage.setItem('token', response.data.token)
+            console.log(`Bearer ${localStorage.getItem('token')}`)
+
         } catch (e) {
             console.log(e)
             localStorage.removeItem('token')
@@ -51,8 +50,8 @@ export const auth = (): userThunkType => {
     }
 
 }
-export const uploadAvatar = (file: any): userThunkType => {
-    return async dispatch => {
+export const uploadAvatar = (file: any) => {
+    return async (dispatch: any) => {
         try {
             const formData = new FormData()
             formData.append('file', file)
@@ -66,8 +65,8 @@ export const uploadAvatar = (file: any): userThunkType => {
     }
 
 }
-export const deleteAvatar = (): userThunkType => {
-    return async dispatch => {
+export const deleteAvatar = () => {
+    return async (dispatch: any) => {
         try {
             const response = await instance.delete('/avatar',
                 {headers: {Authorization: `Bearer ${localStorage.getItem('token')}`}})
@@ -78,8 +77,8 @@ export const deleteAvatar = (): userThunkType => {
 
     }
 }
-export const SetMobile = (): userThunkType => {
-    return async dispatch => {
+export const SetMobile = () => {
+    return async (dispatch: any) => {
         try {
 
             dispatch(userReducerAction.setMobile(true))
@@ -90,4 +89,3 @@ export const SetMobile = (): userThunkType => {
     }
 
 }
-type userThunkType = BaseThunkType<userReducerActionType>

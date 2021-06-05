@@ -47,8 +47,15 @@ const Profile = () => {
                                     className={classes.input}
                                 />
                         <Col className={classes.desc}>
-                                <div className={classes.title}><Mailbox/> {user.email}</div>
-                                <div><DiscFill/> {sizeFormat(user.usedSpace)}/{sizeFormat(user.diskSpace)}</div>
+                                <div className={classes.title}>
+                                    <div><Mailbox/> Почта</div>
+                                    {user.email}
+                                </div>
+                                 <div className={classes.title}>
+                                <div><Disc/> Место на диске</div>
+                                     {sizeFormat(user.usedSpace)}
+                                     /{sizeFormat(user.diskSpace)}
+                                </div>
                                 <ProgressBar  striped variant="success" now={diskPercent} />
                         </Col>
                         </div>

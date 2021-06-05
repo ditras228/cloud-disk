@@ -1,12 +1,12 @@
-import React, {useEffect, useState} from 'react'
+import React, {useState} from 'react'
 import {Button, ButtonGroup, Card, Col, Container, Fade, Row} from 'react-bootstrap'
 import {useDispatch, useSelector} from 'react-redux'
 import {deleteFile, downloadFile} from '../../../../redux/actions/file'
 import {CloudDownloadFill, FileEarmark, Folder, TrashFill} from 'react-bootstrap-icons'
 import {IFile} from '../../../../types/types'
 import {CurrentDir} from '../../../../redux/selectors'
-import {fileReducerAction} from '../../../../redux/reducers/fileReducer'
 import sizeFormat from '../../../utils/sizeFormat'
+import {actions} from '../../../../redux/actions/actions'
 import classes from './File.module.css'
 
 const FileFC: React.FC<FileProps> = ({id,file, view}) => {
@@ -18,8 +18,8 @@ const FileFC: React.FC<FileProps> = ({id,file, view}) => {
     function openDirHandler() {
         if (file.type === 'dir') {
             console.log(file)
-            dispatch(fileReducerAction.pushToStack(currentDir))
-            dispatch(fileReducerAction.setCurrentDir(file._id))
+            dispatch    (actions.file.pushToStack(currentDir))
+            dispatch(actions.file.setCurrentDir(file._id))
         }
     }
 
@@ -90,12 +90,14 @@ const FileFC: React.FC<FileProps> = ({id,file, view}) => {
     }
 
     function dragStartHandler(e: any) {
-        e.currentTarget.style.border='2px solid red'
+        e.currentTarget.style.border='2px dashed cyan'
+        dispatch(actions.upload.byDrop(false))
 
     }
 
     function dragEndHandler(e: any) {
         e.currentTarget.style.border='2px solid transparent'
+        dispatch(actions.upload.byDrop(true))
 
 
     }

@@ -45,8 +45,9 @@
     grid-template-columns: auto 1fr;
     }
 .title{
-    font-size: 28px;
-    display: inline-block;
+    font-size: 22px;
+    display: grid;
+    grid-gap: 5px;
 }
 .desc{
     font-size: 23px;

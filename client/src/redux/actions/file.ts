@@ -1,15 +1,10 @@
 import {baseURL, instance} from '../../components/api/api'
-import {fileReducerAction, fileReducerActionType} from '../reducers/fileReducer'
-import {appReducerAction, appReducerActionType} from '../reducers/appReducer'
-import {BaseThunkType} from '../reducers'
-import {uploadReducerActions} from '../reducers/uploadReducer'
-import {array} from 'yup'
+import {actions} from './actions'
 
-export const getFiles = (dirId: any, sort: string | null): fileThunkType => {
-    return async dispatch => {
+export const getFiles = (dirId: any, sort: string | null) => {
+    return async (dispatch: any)  => {
         try {
-            // @ts-ignore
-            dispatch(appReducerAction.showLoader())
+            dispatch(actions.app.showLoader())
             let url = '/files'
             if (dirId)
                 url = `/files?parent=${dirId}`
@@ -21,17 +16,16 @@ export const getFiles = (dirId: any, sort: string | null): fileThunkType => {
             const response = await instance.get(url, {
                 headers: {Authorization: `Bearer ${localStorage.getItem('token')}`}
             })
-            dispatch(fileReducerAction.setFiles(response.data))
+            dispatch(actions.file.setFiles(response.data))
         } catch (e) {
             console.log(e)
         } finally {
-            // @ts-ignore
-            dispatch(appReducerAction.hideLoader())
+            dispatch(actions.app.hideLoader())
         }
     }
 }
-export const createDir = (dirId: string, name: string): fileThunkType => {
-    return async dispatch => {
+export const createDir = (dirId: string, name: string) => {
+    return async (dispatch: any)  => {
         const response = await instance.post(`/files`,
             {
                 name,
@@ -41,11 +35,11 @@ export const createDir = (dirId: string, name: string): fileThunkType => {
             {
                 headers: {Authorization: `Bearer ${localStorage.getItem('token')}`}
             })
-        dispatch(fileReducerAction.addFile(response.data))
+        dispatch(actions.file.addFile(response.data))
     }
 }
-export function uploadFile(files: Array<any> , dirId: string): fileThunkType {
-    return async dispatch => {
+export function uploadFile(files: Array<any> , dirId: string){
+    return async (dispatch: any)  => {
         try {
             let uploadFile: { name: string; progress: number; id: number } | null = null
 
@@ -54,16 +48,15 @@ export function uploadFile(files: Array<any> , dirId: string): fileThunkType {
                formData.append('file', file)
                formData.append('webkitRelativePath', file.webkitRelativePath)
                uploadFile = {name: file.name, progress: 0, id: Date.now()}
+               dispatch(actions.upload.addUploadFiles(uploadFile))
             })
 
             if (dirId) {
                 formData.append('parent', dirId)
             }
 
-            // @ts-ignore
-            dispatch(uploadReducerActions.showUploader())
-            // @ts-ignore
-            dispatch(uploadReducerActions.addUploadFiles(uploadFile))
+            dispatch(actions.upload.showUploader())
+
             const response = await instance.post('/files/upload', formData, {
                 headers: {Authorization: `Bearer ${localStorage.getItem('token')}`},
 
@@ -74,12 +67,14 @@ export function uploadFile(files: Array<any> , dirId: string): fileThunkType {
                     if (totalLength) {
                         let progress = Math.round((progressEvent.loaded * 100) / totalLength)
                         console.log(progress)
-                        // @ts-ignore
-                        dispatch(uploadReducerActions.changeUploadProgress({...uploadFile, progress}))
+                        dispatch(actions.upload.changeUploadProgress({...uploadFile, progress}))
                     }
                 }
             })
-            dispatch(fileReducerAction.addFile(response.data))
+            response.data.map((file: any)=>{
+                dispatch(actions.file.addFile(file))
+
+            })
         } catch (e) {
             console.log(e)
         }
@@ -105,8 +100,8 @@ export async function downloadFile(file: any) {
     }
 }
 
-export function deleteFile(file: any): fileThunkType {
-    return async dispatch => {
+export function deleteFile(file: any) {
+    return async (dispatch: any)  => {
         try {
             let response: any
             if (file.type === 'dir') {
@@ -118,8 +113,7 @@ export function deleteFile(file: any): fileThunkType {
                     headers: {Authorization: `Bearer ${localStorage.getItem('token')}`},
                 })
             }
-
-            dispatch(fileReducerAction.deleteFileAction(file._id))
+            dispatch(actions.file.deleteFileAction(file._id))
             alert(response.data.message)
         } catch (e) {
             console.log(e)
@@ -127,21 +121,17 @@ export function deleteFile(file: any): fileThunkType {
     }
 }
 
-export function searchFiles(search: any): fileThunkType | appThunkType {
-    return async dispatch => {
+export function searchFiles(search: any) {
+    return async (dispatch: any)  => {
         try {
             const response = await instance.get(`/files/search?search=${search}`, {
                 headers: {Authorization: `Bearer ${localStorage.getItem('token')}`},
             })
-            dispatch(fileReducerAction.setFiles(response.data))
+            dispatch(actions.file.setFiles(response.data))
         } catch (e) {
             console.log(e)
         } finally {
-            // @ts-ignore
-            dispatch(appReducerAction.hideLoader())
+            dispatch(actions.app.hideLoader())
         }
     }
 }
-
-type fileThunkType = BaseThunkType<fileReducerActionType>
-type appThunkType = BaseThunkType<appReducerActionType>
