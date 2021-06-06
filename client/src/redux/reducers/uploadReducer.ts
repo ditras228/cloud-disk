@@ -19,7 +19,7 @@ export default function uploadReducer(state = defaultState, action: UploadReduce
             return {...state, isVisible: true}
         case 'CHANGE_UPLOAD_PROGRESS':
             return {...state,
-            files: [...state.files.map((file: any)=> file.id == action.payload.id
+            files: [...state.files.map((file: any)=> file.id === action.payload.id
                 ?{...file, progress: action.payload.progress}
                 :{...file}
             )]

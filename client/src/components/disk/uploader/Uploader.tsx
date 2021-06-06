@@ -1,6 +1,5 @@
 import React from 'react'
 import {Button, Card, Modal, ProgressBar} from 'react-bootstrap'
-import classes from './Uploader.module.css'
 import {useDispatch, useSelector} from 'react-redux'
 import {IsVisible, UploaderFiles} from '../../../redux/selectors'
 import {uploadReducerActions} from '../../../redux/reducers/uploadReducer'
@@ -20,7 +19,7 @@ const Uploader = () => {
             </Modal.Header>
             <Modal.Body>
                 {
-                    files.map((file: any) => <FileProgress file={file} key={file.id}/>
+                    files.map((file: any) => <FileProgress file={file} key={Date.now()}/>
                     )
                 }
             </Modal.Body>

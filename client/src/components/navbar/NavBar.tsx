@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react'
+import React, {useState} from 'react'
 import {Button, Form, FormControl, InputGroup, Navbar} from "react-bootstrap";
 import {useHistory} from "react-router";
 import {useDispatch, useSelector} from "react-redux";
@@ -25,7 +25,7 @@ const NavBar = () => {
             clearTimeout(searchTimeout)
         }
         dispatch(appReducerAction.showLoader())
-        if (e.target.value != '')
+        if (e.target.value !== '')
             setSearchTimeout(setTimeout(() => {
                 dispatch(searchFiles(e.target.value))
             }, 500))

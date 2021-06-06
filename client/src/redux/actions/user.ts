@@ -5,7 +5,7 @@ import {appReducerAction} from '../reducers/appReducer'
 export const registration =  (email: string, password: string) => {
     return async (dispatch: any)  => {
         try {
-            const response = await instance.post('auth/registration/', {
+            await instance.post('auth/registration/', {
                 email,
                 password
             })

@@ -1,7 +1,6 @@
 import React from 'react'
 import {Alert, Button, Card, Container, Form} from 'react-bootstrap'
 import {registration} from '../../redux/actions/user'
-import {useHistory} from 'react-router'
 import {useFormik} from 'formik'
 import * as Yup from 'yup'
 import {useDispatch, useSelector} from 'react-redux'

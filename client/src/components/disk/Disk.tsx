@@ -25,11 +25,9 @@ const Disk = () => {
     const byDrop = useSelector(GetUploadFilesByDrop)
     const isMobile = useSelector(state => GetIsMobile(state))
     const folderInput= React.useRef(null)
-
-
+    
     useEffect(() => {
         dispatch(getFiles(currentDir, sort))
-        console.log(currentDir)
     }, [currentDir, sort])
 
     useEffect(() => {
@@ -62,7 +60,6 @@ const Disk = () => {
 
     function fileUploadHandler(event: { target: { files: any } }) {
         const files = [...event.target.files]
-        console.log(files)
         dispatch(uploadFile(files, currentDir))
 
     }
@@ -84,12 +81,11 @@ const Disk = () => {
         e.stopPropagation()
         let files = Array.from(e.dataTransfer.files)
 
-        console.log(files)
         dispatch(uploadFile(files, currentDir))
         dispatch(actions.upload.showUploader())
         setDragEnter(false)
     }
-    if (loader == true) {
+    if (loader) {
         return <LoaderFC/>
     }
     return (!dragEnter?

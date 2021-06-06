@@ -1,14 +1,13 @@
 import React from 'react'
-import {Alert, Card, Col, Container, Row} from 'react-bootstrap'
+import {Alert, Card, Col, Row} from 'react-bootstrap'
 import File from './file/File'
-import {useDispatch, useSelector} from 'react-redux'
+import {useSelector} from 'react-redux'
 import {Files} from '../../../redux/selectors'
 import classes from './FileList.module.css'
-const FileList: React.FC<any> = ({view, setView}) => {
 
-
+const FileList: React.FC<any> = ({view}) => {
     const files = useSelector(state => Files(state)).map((file: any, index: number) =>
-        <File key={index}
+        <File key={Date.now()}
               id={index}
               file={file}
               view={view}
@@ -17,8 +16,7 @@ const FileList: React.FC<any> = ({view, setView}) => {
     if (files.length === 0) {
         return <Alert variant={'primary'}>Папка пуста</Alert>
     }
-
-    if(view=='grid') {
+    if(view=== 'grid') {
         return (
             <div className={classes.body}>
                 {files}

@@ -1,5 +1,6 @@
 import {baseURL, instance} from '../../components/api/api'
 import {actions} from './actions'
+import {IFile} from '../../types/types'
 
 export const getFiles = (dirId: any, sort: string | null) => {
     return async (dispatch: any)  => {
@@ -44,7 +45,7 @@ export function uploadFile(files: Array<any> , dirId: string){
             let uploadFile: { name: string; progress: number; id: number } | null = null
 
             const formData = new FormData()
-            files.map(file=>{
+            files.forEach(file=>{
                formData.append('file', file)
                formData.append('webkitRelativePath', file.webkitRelativePath)
                uploadFile = {name: file.name, progress: 0, id: Date.now()}
@@ -71,7 +72,7 @@ export function uploadFile(files: Array<any> , dirId: string){
                     }
                 }
             })
-            response.data.map((file: any)=>{
+            response.data.forEach((file: any)=>{
                 dispatch(actions.file.addFile(file))
 
             })
@@ -81,7 +82,17 @@ export function uploadFile(files: Array<any> , dirId: string){
     }
 
 }
+export async function dragdrop(file: IFile, path: string) {
+    await instance.post(`/files`,
+        {
+            file,
+            path
+        },
+        {
+            headers: {Authorization: `Bearer ${localStorage.getItem('token')}`}
+        })
 
+}
 export async function downloadFile(file: any) {
     const response = await fetch(`${baseURL}/api/files/download?id=${file._id}`, {
         headers: {

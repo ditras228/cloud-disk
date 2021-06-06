@@ -1,7 +1,11 @@
 export interface IFile {
-    name: string
-    size: number
-    data: string
     _id: string
+    name: string
     type: string
+    accessLink: string
+    size: number
+    path: string
+    data: string
+    parent: string
+    childs: string
 }

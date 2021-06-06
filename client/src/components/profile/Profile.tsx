@@ -1,12 +1,13 @@
 import React from 'react'
-import {Card, Col, Container, Form, ListGroup, ProgressBar, Row} from 'react-bootstrap'
-import classes  from './Profile.module.css'
-import {Disc, DiscFill, Mailbox, Person, Upload} from 'react-bootstrap-icons'
+import {Card, Col, Container, ProgressBar} from 'react-bootstrap'
+import {Disc, Mailbox, Upload} from 'react-bootstrap-icons'
 import {useDispatch, useSelector} from 'react-redux'
 import {uploadAvatar} from '../../redux/actions/user'
 import {GetUser} from '../../redux/selectors'
 import {baseURL} from '../api/api'
 import sizeFormat from '../utils/sizeFormat'
+import classes from './Profile.module.css'
+
 const Profile = () => {
     const dispatch = useDispatch()
     const user = useSelector(state => GetUser(state)).currentUser

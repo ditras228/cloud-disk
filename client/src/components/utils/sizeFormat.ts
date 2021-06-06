@@ -1,4 +1,4 @@
-export default (size: number) =>{
+const SizeFormat = (size: number) =>{
     if(size> 1024*1024*1024){
         return (size/(1024*1024*1024)).toFixed(1)+'Gb'
     }
@@ -10,3 +10,4 @@ export default (size: number) =>{
     return size+'B'
 
 }
+export  default  SizeFormat

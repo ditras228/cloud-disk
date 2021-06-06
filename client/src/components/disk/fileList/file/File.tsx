@@ -9,16 +9,14 @@ import sizeFormat from '../../../utils/sizeFormat'
 import {actions} from '../../../../redux/actions/actions'
 import classes from './File.module.css'
 
-const FileFC: React.FC<FileProps> = ({id,file, view}) => {
+const FileFC: React.FC<FileProps> = ({file, view}) => {
     const dispatch = useDispatch()
     const currentDir = useSelector(state => CurrentDir(state))
     const [fade, setFade] = useState(false)
-    let even
 
     function openDirHandler() {
         if (file.type === 'dir') {
-            console.log(file)
-            dispatch    (actions.file.pushToStack(currentDir))
+            dispatch(actions.file.pushToStack(currentDir))
             dispatch(actions.file.setCurrentDir(file._id))
         }
     }
@@ -42,28 +40,28 @@ const FileFC: React.FC<FileProps> = ({id,file, view}) => {
             return name
     }
     setTimeout(()=>setFade(true), 0);
-    if (view == 'grid') {
+    if (view === 'grid') {
         return (
             <Fade in={fade}>
             <Card className={classes.item}>
                 <div className={classes.body}>
                     <div className={classes.name}>
                         {
-                            file.type == 'dir'
+                            file.type === 'dir'
                                 ? file.name
                                 : getName(file.name)[0].slice(0, 9) + '...'
                         }
                     </div>
                     <div className={classes.i}>
                         {
-                            file.type == 'dir' ? <Folder/> : <FileEarmark/>
+                            file.type === 'dir' ? <Folder/> : <FileEarmark/>
                         }
                     </div>
                 </div>
 
                 <mark className={classes.mark}>
                     {
-                        file.type == 'dir'
+                        file.type === 'dir'
                             ? 'dir'
                             : getName(file.name)[1]
                     }
@@ -73,12 +71,6 @@ const FileFC: React.FC<FileProps> = ({id,file, view}) => {
             </Fade>
         )
     }
-    if(id%2){
-        even = classes.item_list_2
-    }else{
-        even = classes.item_list
-    }
-
     function dragOverHandler(e: any) {
         e.stopPropagation()
         e.currentTarget.style.border='2px solid gray'
@@ -114,7 +106,7 @@ const FileFC: React.FC<FileProps> = ({id,file, view}) => {
             <Row>
                 <Col sm={1} style={{fontSize: 30}}>
                     {
-                        file.type == 'dir' ? <Folder/> : <FileEarmark/>
+                        file.type === 'dir' ? <Folder/> : <FileEarmark/>
                     }
                 </Col>
                 <Col style={{display: 'flex', alignItems: 'center'}} sm={5}>{file.name}</Col>
@@ -139,7 +131,6 @@ const FileFC: React.FC<FileProps> = ({id,file, view}) => {
 export default FileFC
 
 type FileProps = {
-    id:number,
     file: IFile,
     view: string
 }

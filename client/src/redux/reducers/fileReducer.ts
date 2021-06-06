@@ -1,4 +1,5 @@
 import {InferActionsTypes} from './index'
+import {IFile} from '../../types/types'
 
 const defaultState = {
     files: [] as Array<IFile>,
@@ -18,8 +19,7 @@ export default function fileReducer(state = defaultState, action:fileReducerActi
         case 'PUSH_TO_STACK':
             return {...state, dirStack: [...state.dirStack, action.payload]}
         case 'DELETE_FILE':
-            return {...state, files: [...state.files.filter(file => file._id != action.payload)]}
-
+            return {...state, files: [...state.files.filter(file => file._id !== action.payload)]}
         default:
             return state
     }
@@ -29,19 +29,8 @@ export const fileReducerAction = {
     setCurrentDir: (dir: string) => ({type: 'SET_CURRENT_DIR', payload: dir} as const),
     addFile: (file: IFile) => ({type: 'ADD_FILE', payload: file} as const),
     pushToStack: (dir: string) => ({type: 'PUSH_TO_STACK', payload: dir} as const),
-    deleteFileAction: (dirId: number) => ({type: 'DELETE_FILE', payload: dirId} as const)
+    deleteFileAction: (dirId: string) => ({type: 'DELETE_FILE', payload: dirId} as const)
 }
 
 export type fileReducerActionType = InferActionsTypes<typeof fileReducerAction>
 
-type IFile = {
-    _id: number
-    name: string
-    type: string
-    accessLink: string
-    size: number
-    path: string
-    data: string
-    parent: string
-    childs: string
-}
