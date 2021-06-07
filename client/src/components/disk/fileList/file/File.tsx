@@ -1,13 +1,14 @@
 import React, {useState} from 'react'
-import {Button, ButtonGroup, Card, Col, Container, Fade, Row} from 'react-bootstrap'
+import {Button, ButtonGroup, Card, Col, Container, Fade, InputGroup, Row} from 'react-bootstrap'
 import {useDispatch, useSelector} from 'react-redux'
 import {deleteFile, downloadFile} from '../../../../redux/actions/file'
-import {CloudDownloadFill, FileEarmark, Folder, TrashFill} from 'react-bootstrap-icons'
+import {CloudDownloadFill, FileEarmark, Folder, Link45deg, TrashFill} from 'react-bootstrap-icons'
 import {IFile} from '../../../../types/types'
 import {CurrentDir} from '../../../../redux/selectors'
 import sizeFormat from '../../../utils/sizeFormat'
 import {actions} from '../../../../redux/actions/actions'
 import classes from './File.module.css'
+import 'react-dragswitch/dist/index.css'
 
 const FileFC: React.FC<FileProps> = ({file, view}) => {
     const dispatch = useDispatch()
@@ -81,16 +82,15 @@ const FileFC: React.FC<FileProps> = ({file, view}) => {
 
     }
 
-    function dragStartHandler(e: any) {
-        e.currentTarget.style.border='2px dashed cyan'
+    async function dragStartHandler(e: any) {
+        e.currentTarget.style.display='none'
         dispatch(actions.upload.byDrop(false))
-
+        console.log(e)
     }
 
     function dragEndHandler(e: any) {
         e.currentTarget.style.border='2px solid transparent'
         dispatch(actions.upload.byDrop(true))
-
 
     }
 
@@ -103,12 +103,16 @@ const FileFC: React.FC<FileProps> = ({file, view}) => {
             onDragStart={(e:any)=>dragStartHandler(e) }
             onDragEnd={(e:any)=>dragEndHandler(e) }
             className={'item'} draggable={true}>
+
             <Row>
                 <Col sm={1} style={{fontSize: 30}}>
                     {
                         file.type === 'dir' ? <Folder/> : <FileEarmark/>
                     }
                 </Col>
+
+
+
                 <Col style={{display: 'flex', alignItems: 'center'}} sm={5}>{file.name}</Col>
                 <Col style={{display: 'flex', alignItems: 'center'}} sm={2}>{file.data.slice(0, 10)}</Col>
                 <Col style={{display: 'flex', alignItems: 'center'}} sm={2}> {sizeFormat(file.size)}</Col>
@@ -120,7 +124,10 @@ const FileFC: React.FC<FileProps> = ({file, view}) => {
                             <Button onClick={e => downloadClickHandler(e)}>
                                 <CloudDownloadFill/>
                             </Button>
-                        </ButtonGroup>
+                            <Button onClick={e => downloadClickHandler(e)}>
+                                <Link45deg/>
+                            </Button>
+                            </ButtonGroup>
                     </Col>
             </Row>
         </Container>

@@ -8,7 +8,6 @@ import classes from './FileList.module.css'
 const FileList: React.FC<any> = ({view}) => {
     const files = useSelector(state => Files(state)).map((file: any, index: number) =>
         <File key={Date.now()}
-              id={index}
               file={file}
               view={view}
         />

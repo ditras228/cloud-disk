@@ -11,6 +11,7 @@ import Uploader from './uploader/Uploader'
 import LoaderFC from '../loader/LoaderFC'
 import classes from './Disk.module.css'
 import {actions} from '../../redux/actions/actions'
+import NavFolder from './fileList/navFolder/navFolder'
 
 const Disk = () => {
     const dispatch = useDispatch()
@@ -126,6 +127,7 @@ const Disk = () => {
                         />
                     </Form>
                     <CreateDirModal show={show} setShow={setShow} createDirHandler={createDirHandler}/>
+                    <NavFolder/>
                     <FileList view  ={view} setView={setView}/>
                     <Uploader/>
                 </Container>

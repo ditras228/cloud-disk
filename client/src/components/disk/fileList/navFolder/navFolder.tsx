@@ -1,14 +1,16 @@
 import React from 'react'
 import {IFile} from '../../../../types/types'
+import {Breadcrumb} from 'react-bootstrap'
 
 const NavFolder: React.FC<any>  = (files: Array<IFile>) => {
     return (
-        <div>
-
-            {files.map(file=>
-            <Folder file={file}/>
-            )}
-        </div>
+        <Breadcrumb>
+            <Breadcrumb.Item href="#">Home</Breadcrumb.Item>
+            <Breadcrumb.Item href="https://getbootstrap.com/docs/4.0/components/breadcrumb/">
+                Library
+            </Breadcrumb.Item>
+            <Breadcrumb.Item active>Data</Breadcrumb.Item>
+        </Breadcrumb>
     )
 }
 
