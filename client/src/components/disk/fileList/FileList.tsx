@@ -6,12 +6,14 @@ import {Files} from '../../../redux/selectors'
 import classes from './FileList.module.css'
 
 const FileList: React.FC<any> = ({view}) => {
+
     const files = useSelector(state => Files(state)).map((file: any, index: number) =>
-        <File key={Date.now()}
+        <File key={index}
               file={file}
               view={view}
         />
     )
+
     if (files.length === 0) {
         return <Alert variant={'primary'}>Папка пуста</Alert>
     }

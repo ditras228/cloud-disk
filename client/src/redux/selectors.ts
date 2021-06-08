@@ -32,3 +32,12 @@ export const GetUploadFilesByDrop = (state: any)=>{
 export const GetError = (state: any)=>{
     return state.app.error
 }
+export const GetHand = (state: any)=>{
+    return state.file.hand
+}
+export const GetDirStack = (state: any)=>{
+    return state.file.dirStack
+}
+export const GetDropTo = (state: any)=>{
+    return state.file.dropTo
+}

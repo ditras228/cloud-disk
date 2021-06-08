@@ -5,7 +5,6 @@ import {IFile} from '../../types/types'
 export const getFiles = (dirId: any, sort: string | null) => {
     return async (dispatch: any)  => {
         try {
-            dispatch(actions.app.showLoader())
             let url = '/files'
             if (dirId)
                 url = `/files?parent=${dirId}`
@@ -20,8 +19,6 @@ export const getFiles = (dirId: any, sort: string | null) => {
             dispatch(actions.file.setFiles(response.data))
         } catch (e) {
             console.log(e)
-        } finally {
-            dispatch(actions.app.hideLoader())
         }
     }
 }
@@ -82,17 +79,24 @@ export function uploadFile(files: Array<any> , dirId: string){
     }
 
 }
-export async function dragdrop(file: IFile, path: string) {
-    await instance.post(`/files`,
-        {
-            file,
-            path
-        },
-        {
-            headers: {Authorization: `Bearer ${localStorage.getItem('token')}`}
-        })
+export function dropTo(file: IFile, folderId: string) {
+    return async (dispatch: any) => {
+        try{
+            const response= await instance.post(`/dropTo`,
+                {
+                    fileId: file._id,
+                    folderId: folderId
+                },
+                {
+                    headers: {Authorization: `Bearer ${localStorage.getItem('token')}`}
+                })
+            dispatch(actions.file.deleteFileAction(file._id))
+            console.log(response)
+        }catch(e){
+            console.log(e)
+    }
 
-}
+}}
 export async function downloadFile(file: any) {
     const response = await fetch(`${baseURL}/api/files/download?id=${file._id}`, {
         headers: {

@@ -17,26 +17,18 @@
     margin-left: auto;
     padding: 0 5px 5px 10px;
 }
-.item{
 
-}
-.item:hover{
-    background-color: whitesmoke;
-    cursor: pointer;
-}
 .item_list:hover{
     background-color: whitesmoke;
     cursor: pointer;
 }
-.item_list_2:hover{
-    background-color: white;
-    cursor: pointer;
-}
+
 /*List*/
 .item_list {
+    padding-top: 10px;
+    padding-bottom: 10px;
     margin-bottom: 10px;
 }
-.item_list_2{
-    background-color: whitesmoke;
-    margin-bottom: 10px;
+.buttons{
+    display: flex;
 }

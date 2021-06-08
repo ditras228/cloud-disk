@@ -1,24 +1,24 @@
-import React, {useState} from 'react'
+import React, {useEffect, useState} from 'react'
 import {Button, ButtonGroup, Card, Col, Container, Fade, InputGroup, Row} from 'react-bootstrap'
 import {useDispatch, useSelector} from 'react-redux'
-import {deleteFile, downloadFile} from '../../../../redux/actions/file'
+import {deleteFile, downloadFile, dropTo} from '../../../../redux/actions/file'
 import {CloudDownloadFill, FileEarmark, Folder, Link45deg, TrashFill} from 'react-bootstrap-icons'
 import {IFile} from '../../../../types/types'
-import {CurrentDir} from '../../../../redux/selectors'
+import {CurrentDir, GetHand} from '../../../../redux/selectors'
 import sizeFormat from '../../../utils/sizeFormat'
 import {actions} from '../../../../redux/actions/actions'
 import classes from './File.module.css'
 import 'react-dragswitch/dist/index.css'
-
+export {}
 const FileFC: React.FC<FileProps> = ({file, view}) => {
     const dispatch = useDispatch()
-    const currentDir = useSelector(state => CurrentDir(state))
     const [fade, setFade] = useState(false)
+    const [isOver, setIsOver] = useState(false)
 
     function openDirHandler() {
         if (file.type === 'dir') {
-            dispatch(actions.file.pushToStack(currentDir))
-            dispatch(actions.file.setCurrentDir(file._id))
+            dispatch(actions.file.pushToStack(file))
+            dispatch(actions.file.setCurrentDir(file))
         }
     }
 
@@ -74,23 +74,40 @@ const FileFC: React.FC<FileProps> = ({file, view}) => {
     }
     function dragOverHandler(e: any) {
         e.stopPropagation()
+
         e.currentTarget.style.border='2px solid gray'
+        setIsOver(true)
+        setTimeout(()=>{
+            setIsOver(false)
+        }, 20)
+
     }
 
     function dragLeaveHandler(e: any) {
-        e.currentTarget.style.border='2px solid transparent'
+        const fileId=e.currentTarget.getAttribute('fileId')
+        const fileType=e.currentTarget.getAttribute('fileType')
+        
+        if(fileType==='dir' && isOver){
+            e.currentTarget.style.border='2px solid transparent'
+            dispatch(actions.file.dropToFolder(fileId))
+        }
+       
 
     }
 
-    async function dragStartHandler(e: any) {
-        e.currentTarget.style.display='none'
-        dispatch(actions.upload.byDrop(false))
-        console.log(e)
+    function dragStartHandler(e: any) {
+        const target = e.currentTarget.style
+        setTimeout(()=>{
+            dispatch(actions.upload.byDrop(false))
+            dispatch(actions.file.setHand(file))
+            target.display='none'
+        }, 0)
     }
 
     function dragEndHandler(e: any) {
-        e.currentTarget.style.border='2px solid transparent'
+        e.currentTarget.style.display='block'
         dispatch(actions.upload.byDrop(true))
+        console.log('2')
 
     }
 
@@ -98,11 +115,16 @@ const FileFC: React.FC<FileProps> = ({file, view}) => {
         <Fade in={fade}>
         <Container
             onClick={() => openDirHandler()}
+            onMouseDown={(e: any)=>dispatch(actions.file.setHand(e.currentTarget))}
+            draggable={true}
             onDragOver={(e:any)=>dragOverHandler(e) }
             onDragLeave={(e:any)=>dragLeaveHandler(e) }
             onDragStart={(e:any)=>dragStartHandler(e) }
             onDragEnd={(e:any)=>dragEndHandler(e) }
-            className={'item'} draggable={true}>
+            className={classes.item_list}
+            fileId={file._id}
+            fileType={file.type}
+        >
 
             <Row>
                 <Col sm={1} style={{fontSize: 30}}>
@@ -116,8 +138,8 @@ const FileFC: React.FC<FileProps> = ({file, view}) => {
                 <Col style={{display: 'flex', alignItems: 'center'}} sm={5}>{file.name}</Col>
                 <Col style={{display: 'flex', alignItems: 'center'}} sm={2}>{file.data.slice(0, 10)}</Col>
                 <Col style={{display: 'flex', alignItems: 'center'}} sm={2}> {sizeFormat(file.size)}</Col>
-                    <Col sm={2}>
-                        <ButtonGroup>
+                    <Col sm={2} className={classes.buttons} >
+                        <ButtonGroup >
                             <Button onClick={e => deleteClickHandler(e)}>
                                 <TrashFill/>
                             </Button>

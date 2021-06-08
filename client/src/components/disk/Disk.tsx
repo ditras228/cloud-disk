@@ -1,9 +1,17 @@
 import React, {DOMAttributes, useEffect, useState} from 'react'
 import {useDispatch, useSelector} from 'react-redux'
-import {createDir, getFiles, uploadFile} from '../../redux/actions/file'
+import {createDir, dropTo, getFiles, uploadFile} from '../../redux/actions/file'
 import FileList from './fileList/FileList'
 import {Button, Container, Dropdown, Form} from 'react-bootstrap'
-import {CurrentDir, DirStack, GetIsMobile, GetUploadFilesByDrop, Loader} from '../../redux/selectors'
+import {
+    CurrentDir,
+    DirStack,
+    GetDropTo,
+    GetHand,
+    GetIsMobile,
+    GetUploadFilesByDrop,
+    Loader
+} from '../../redux/selectors'
 import CreateDirModal from '../modal/CreateDirModal'
 import {CloudUploadFill, Grid3x3GapFill, List} from 'react-bootstrap-icons'
 import {DragEvent} from 'react'
@@ -26,9 +34,18 @@ const Disk = () => {
     const byDrop = useSelector(GetUploadFilesByDrop)
     const isMobile = useSelector(state => GetIsMobile(state))
     const folderInput= React.useRef(null)
-    
+    const[backButton, setBackButton] = useState(true)
+    const dropToFolder = useSelector(state=>GetDropTo(state))
+    const hand = useSelector(state=>GetHand(state))
+
     useEffect(() => {
-        dispatch(getFiles(currentDir, sort))
+        if(hand && dropToFolder)
+            dispatch(dropTo(hand, dropToFolder))
+
+    },[dropToFolder])
+
+    useEffect(() => {
+        dispatch(getFiles(currentDir?._id, sort))
     }, [currentDir, sort])
 
     useEffect(() => {
@@ -39,7 +56,11 @@ const Disk = () => {
         window.addEventListener("resize", updateWindowDimensions);
         return () => window.removeEventListener("resize", updateWindowDimensions)
     }, [width]);
-
+    useEffect(()=>{
+            dirStack.length<=1
+                ?setBackButton(true)
+                :setBackButton(false)
+    },[dirStack.length])
     useEffect(() => {
         if (window.innerWidth < 1000) {
             dispatch(actions.user.setMobile(true))
@@ -55,8 +76,8 @@ const Disk = () => {
     }
 
     function backClickHandler() {
-        const backDirId = dirStack.pop()
-        dispatch(actions.file.setCurrentDir(backDirId))
+        const backDirId =   dirStack.pop()
+        dispatch(actions.file.setCurrentDir(backDirId._id))
     }
 
     function fileUploadHandler(event: { target: { files: any } }) {
@@ -95,7 +116,7 @@ const Disk = () => {
                  onDragOver={e=> byDrop?dragEnterHandler(e): ()=>{}}>
                 <Container style={{marginBottom: 20}}>
                     <div className={classes.tools}>
-                        <Button onClick={backClickHandler}>Назад</Button>
+                        <Button onClick={backClickHandler} disabled={backButton}>Назад</Button>
                         <Button onClick={() => setShow(true)}>Создать папку</Button>
                         <div className={classes.options}>
                             {!isMobile &&
@@ -144,6 +165,8 @@ declare module 'react' {
     interface HTMLAttributes<T> extends AriaAttributes, DOMAttributes<T> {
         directory?: string;
         webkitdirectory?: string;
+        fileId?: string;
+        fileType?: string;
     }
 }
 const DropdownBtn: React.FC<IDropDownBtnProps> = ({setSort}) => {
