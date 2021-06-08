@@ -1,14 +1,11 @@
 import {NextFunction} from 'express'
+import {IReq} from '../typings/IRoute'
 
-function filePath(path: any) {
+function staticPath(path: any) {
     return function (req: Request & IReq, res: Response, next: NextFunction) {
-        req.filePath = path
+        req.static = path
         next()
     }
 }
 
-module.exports = filePath
-
-interface IReq{
-    filePath: string
-}
+module.exports = staticPath

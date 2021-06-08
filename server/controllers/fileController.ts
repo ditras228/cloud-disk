@@ -1,22 +1,35 @@
+import {IReq, IRes} from '../typings/IRoute'
+import {IFile} from '../models/File'
+
 require('dotenv').config()
-const FileSchema = require('../models/File')
-const User = require('../models/User')
 const fs = require('fs')
-const uuid= require('uuid')
-const fileService = require('../services/fileService')
+const uuid = require('uuid')
+import {FileService} from '../services/fileService'
+import {IUser} from '../models/User'
+
+const archiver = require('archiver')
+const UserSchema = require('../models/User.ts')
+const FileSchema = require('../models/File.ts')
 
 class FileController {
-    async createDir(req, res) {
+    async createDir(req: Request & IReq & IReqFile, res: Response & IRes) {
         try {
             const {name, type, parent} = req.body
-            const file = new FileSchema({name, type, parent, user: req.user.id})
-            const parentFile = await FileSchema.findOne({_id: parent})
+            const user = await UserSchema({_id: req.user._id}) as IUser
+            const file = new FileSchema({name, type, parent, user: req.user._id}) as IFile
+            const parentFile = await FileSchema.findOne({_id: parent}) as IFile
+            let path
+
             if (!parentFile) {
-                file.path = name
-                await fileService.createDir(req,file)
+                path = `${user._id}/${file.name}`
+                file.path = path
+                file.user = user._id
+                await FileService.createDir(req, file)
             } else {
-                file.path = `${req.filePath}\\${file.name}`
-                await fileService.createDir(file)
+                path = `${parentFile.path}/${file.name}`
+                file.path = path
+                file.user = user._id
+                await FileService.createDir(req, file)
                 parentFile.childs.push(file._id)
                 await parentFile.save()
             }
@@ -27,29 +40,29 @@ class FileController {
         }
     }
 
-    async fetchFile(req, res) {
+    async fetchFile(req: Request & IReq, res: Response & IRes) {
         try {
             const {parent, sort} = req.query
+            let files: IFile
             let getParentId
-            if (parent!== undefined)
-            {
+
+            if (parent)
                 getParentId = parent.split('?')[0]
-            }
-            let files
+
             switch (sort) {
                 case 'name':
-                    files = await FileSchema.find({user: req.user.id, parent: getParentId}).sort({name: 1})
+                    files = await FileSchema.find({user: req.user._id, parent: getParentId}).sort({name: 1}) as IFile
                     break
                 case 'type':
-                    files = await FileSchema.find({user: req.user.id, parent: getParentId}).sort({type: 1})
+                    files = await FileSchema.find({user: req.user._id, parent: getParentId}).sort({type: 1}) as IFile
                     break
 
                 case 'date':
-                    files = await FileSchema.find({user: req.user.id, parent:getParentId}).sort({date: 1})
+                    files = await FileSchema.find({user: req.user._id, parent: getParentId}).sort({date: 1}) as IFile
                     break
 
                 default:
-                    files = await FileSchema.find({user: req.user.id, parent: getParentId})
+                    files = await FileSchema.find({user: req.user._id, parent: getParentId}) as IFile
                     break
 
             }
@@ -61,119 +74,291 @@ class FileController {
         }
     }
 
-    async uploadFile(req, res) {
+    async uploadFile(req: Request & IReq & IReqFile, res: Response & IRes) {
         try {
-            const file = req.files.file
-            const parent = await FileSchema.findOne({user: req.user.id, _id: req.body.parent})
-            const user = await User.findOne({_id: req.user.id})
+            const webkitRelativePath = req.body.webkitRelativePath as unknown as Array<string>
+            const files = req.files?.file as Array<IFile> | any
+            let parent = await FileSchema.findOne({user: req.user._id, _id: req.body.parent}) as IFile
+            const user = await UserSchema.findOne({_id: req.user._id}) as IUser
+            let dbFiles = [] as Array<IFile> | any
+            let parentFile: IFile
+            let folder = null as IFile | null
+            let fistFolder = null as IFile | null
 
-            if (user.usedSpace + file.size > user.diskSpace) {
-                return res.status(500).json({message: 'There no space on the disk'})
+            for (let i = 0; i < files?.length; i++) {
+
+                if (user.usedSpace + files[i].size > user.diskSpace) {
+                    return res.status(500).json({message: 'There no space on the disk'})
+                }
+                user.usedSpace = user.usedSpace + files[i].size
+
+                let path
+                if (parent) {
+                    path = `/${parent.path}/${files[i].name}`
+                } else {
+                    path = `/${user._id}/${files[i].name}`
+                }
+                if (webkitRelativePath[i]) {
+                    const relativePath = webkitRelativePath[i].split('/')
+                    let currentPath = `/${user._id}/`
+                    for (let d = 0; d < relativePath.length - 1; d++) {
+                        let previewsPath = currentPath
+                        currentPath += `${relativePath[d]}/`
+
+                        parentFile = await FileSchema.findOne({path: previewsPath})
+                        folder = await FileSchema.findOne({path: currentPath})
+
+                        if (!folder) {
+                            const newFolder = new FileSchema
+                            ({
+                                name: relativePath[d], type: 'dir',
+                                parent: parentFile?._id, user: req.user._id,
+                                path: currentPath
+                            })
+                            await newFolder.save()
+
+                            if(d==0){
+                                fistFolder=newFolder
+                            }
+                        }
+                        parent = await FileSchema.findOne({path: currentPath})
+                        path = `/${user.id}/${webkitRelativePath[i]}`
+                        if (files[i].parent != null && i != 0) {
+                            parentFile.childs.push(files[i]._id)
+                            await parentFile.save()
+                        }
+                    }
+                    fs.mkdir(`${req.filePath}/${user._id}/${webkitRelativePath[i]}`
+                        .replace(relativePath[relativePath.length - 1], ''), {recursive: true}, (err) => {
+                        if (err) throw err
+                    })
+                } else if (fs.existsSync(`${req.filePath}/${path}`)) {
+                    return res.status(400).json({message: 'File already exists'})
+                }
+                files[i].mv(`${req.filePath}/${path}`)
+
+                const type = files[i].name.split('.').pop()
+                const dbFile = new FileSchema({
+                    name: files[i].name,
+                    type,
+                    size: files[i].size,
+                    path: path,
+                    parent: parent ? parent._id : null,
+                    user: user._id
+                })
+                if(parent){
+                    parent.childs.push(dbFile)
+                    await parent.save()
+                }
+                let currentParentPath = dbFile.path
+                let parentRelativePath= currentParentPath.split('/')
+
+                for(let pp=parentRelativePath.length-1; pp>1; pp--){
+                    currentParentPath=currentParentPath.replace(parentRelativePath[pp], '')
+                    const currentParentFile = await FileSchema.findOne({path: currentParentPath}) as IFile
+                    if(currentParentFile){
+                        currentParentFile.size +=dbFile.size
+                        await currentParentFile.save()
+                    }
+
+                }
+                dbFiles.push(dbFile)
             }
-            user.usedSpace = user.usedSpace + file.size
-
-            let path
-            if (parent) {
-                path = `${req.filePath}\\${user._id}\\${parent.path}\\${file.name}`
-            } else {
-                path = `${req.filePath}\\${user._id}\\${file.name}`
-
+            for (let dbI = 0; dbI < dbFiles.length; dbI++) {
+                await dbFiles[dbI].save()
             }
-            if (fs.existsSync(path)) {
-                return res.status(400).json({message: 'File already exists'})
-            }
-            await file.mv(path)
-
-            const type = file.name.split('.').pop()
-            const dbFile = new FileSchema({
-                name: file.name,
-                type,
-                size: file.size,
-                path: path,
-                parent: parent ? parent._id : null,
-                user: user._id
-            })
-            await dbFile.save()
             await user.save()
-            return res.json(dbFile)
+            if(webkitRelativePath[0]){
+                return res.json([fistFolder])
+            }
+            return res.json(dbFiles)
 
         } catch (e) {
             console.log(e)
             return res.status(400).json({message: 'Can`t get files'})
         }
-    }
 
-    async downloadFile(req, res) {
+    }
+    async isShare(req: Request & IReq, res: Response & IRes){
+        const file = await FileSchema.findOne({_id: req.query.id, isShare: true}) as IFile
+        file.isShare=req.body.isShare
+        return res.json(file)
+    }
+    async shareFile(req: Request & IReq, res: Response & IRes & any) {
+        const file = await FileSchema.findOne({_id: req.query.id, isShare: true}) as IFile
+        return res.json(file)
+    }
+    async downloadFile(req: Request & IReq, res: Response & IRes & any) {
         try {
-            let path
-            const file = await FileSchema.findOne({_id: req.query.id, user: req.user.id})
+            let path: string
+            const file = await FileSchema.findOne({_id: req.query.id, user: req.user._id}) as IFile
+
             if (file.parent)
-                path = `${req.filePath}\\${req.user.id}\\${file.path}\\${file.name}`
+                path = `${req.filePath}/${req.user._id}/${file.path}/${file.name}`
             else
-                path = `${req.filePath}\\${req.user.id}\\${file.name}`
+                path = `${req.filePath}/${req.user._id}/${file.name}`
 
             if (fs.existsSync(path)) {
-                return res.download(path, file.name)
+                if (file.type !== 'dir') {
+                    return res.download(path, file.name)
+
+                } else {
+                    const archivePath = `${req.filePath}/${req.user._id}/target.zip`
+                    const output = fs.createWriteStream(archivePath)
+                    const archive = archiver('zip')
+
+                    output.on('close', function () {
+                        console.log(archive.pointer() + ' total bytes')
+                        console.log('archiver has been finalized and the output file descriptor has closed.')
+
+                    })
+
+                    archive.on('error', function (err) {
+                        throw err
+                    })
+                    res.attachment(`${file.name}.zip`)
+                    archive.pipe(res)
+                    archive.directory(path, false)
+                    archive.finalize()
+                    return archive
+                }
+
             }
-            console.log(path)
             return res.status(500).json({message: 'Download error'})
         } catch (e) {
             console.log(e)
         }
     }
 
-    async deleteFile(req, res) {
+    async deleteFile(req: Request & IReq, res: Response & IRes) {
         try {
-            const file = await FileSchema.findOne({_id: req.query.id, user: req.user.id})
+            const file = await FileSchema.findOne({_id: req.query.id, user: req.user._id}) as IFile
+            const user = await UserSchema.findOne({_id: req.user._id}) as IUser
+
+            user.usedSpace = user.usedSpace - file.size
             if (!file) {
                 return res.status(400).json({message: 'File not found'})
             }
-            fileService.deleteFile(req, file)
+            FileService.deleteFile(req, file)
             await file.remove()
+            await user.save()
             return res.json({message: 'File was deleted'})
         } catch (e) {
             console.log(e)
+            return res.json({message: 'Delete file error'})
+        }
+    }
+    async dropTo(req: Request & IReq, res: Response & IRes) {
+        try{
+            const fileId = req.body.fileId
+            const folderId = req.body.folderId
+            const file = await FileSchema.findOne({_id: fileId, user: req.user._id}) as IFile
+            const folder = await FileSchema.findOne({_id: folderId, user: req.user._id}) as IFile
+            file.path = folder.path+file.name
+            file.parent = folder._id
+            fs.move(file.path, )
+            await file.save()
+            return res.json({message: file})
+        }catch(e){
+            console.log(e)
+            return res.json({message: 'Drop error'})
+
+        }
+
+    }
+    async deleteFolder(req: Request & IReq, res: Response & IRes) {
+        try {
+            const folder = await FileSchema.findOne({_id: req.query.id, user: req.user._id}) as IFile
+            const files = await FileSchema.find({parent: folder._id}) as Array<IFile>
+            const user = await UserSchema.findOne({_id: req.user._id}) as IUser
+
+            files.map(file=>{
+                user.usedSpace -= file.size
+            })
+
+            await FileService.removeDir(req, files, folder)
+            await user.save()
+            return res.json({message: 'Folder was deleted'})
+        } catch (e) {
+            console.log(e)
+            return res.json({message: 'Delete folder error'})
+
         }
     }
 
-    async searchFile(req, res) {
+    async searchFile(req: Request & IReq, res: Response & IRes) {
         try {
             const searchName = req.query.search
-            let files = await FileSchema.find({user: req.user.id})
+            let files = await FileSchema.find({user: req.user._id})
             console.log(files)
-            files = files.filter(file => file.name.includes(searchName))
+            files = files.filter((file: IFile) => file.name.includes(searchName))
             return res.json(files)
         } catch (e) {
             console.log(e)
+            return res.json({message: 'Search file error'})
         }
     }
-    async uploadAvatar(req, res) {
+
+    async uploadAvatar(req: Request & IReq, res: Response & IRes) {
         try {
             const file = req.files.file
-            console.log(req.file)
-            const user = await User.findOne({_id: req.user.id})
-            const avatarName = uuid.v4()+'.jpg'
-            await file.mv (`${__dirname}\\..\\static\\${avatarName}`)
-            user.avatar=avatarName
+            const user = await UserSchema.findOne({_id: req.user._id})
+            const avatarName = uuid.v4() + '.jpg'
+
+            if (fs.existsSync(`${req.static}/${user.avatar}`)) {
+                fs.unlinkSync(`${req.static}/${user.avatar}`)
+            }
+            if (!fs.existsSync(req.static)) {
+                fs.mkdirSync(req.static)
+            }
+            await file.mv(`${req.static}/${avatarName}`)
+
+            user.avatar = avatarName
             await user.save()
             return res.json(user)
-        }catch (e){
+        } catch (e) {
             console.log(e)
             return res.json({message: 'Upload avatar error'})
         }
     }
-    async deleteAvatar(req, res) {
+
+    async deleteAvatar(req: Request & IReq, res: Response & IRes) {
         try {
-            const user = await User.findOne({_id:req.user.id})
-            fs.unlinkSync(`${__dirname}\\..\\${user.avatar}`)
+            const user = await UserSchema.findOne({_id: req.user._id})
+            fs.unlinkSync(`${req.static}/${user.avatar}`)
             user.avatar = null
             await user.save()
             return res.json(user)
-        }catch (e){
+        } catch (e) {
             console.log(e)
-            return res.json({message: 'Upload avatar error'})
+            return res.json({message: 'Delete avatar error'})
+        }
+    }
+
+    async nuke(req: Request & IReq, res: Response & IRes) {
+        try {
+            const staticPath = req.static
+            const filePath = req.filePath
+            fs.rmdirSync(staticPath, {recursive: true})
+            fs.rmdirSync(filePath, {recursive: true})
+            await UserSchema.deleteMany({})
+            await FileSchema.deleteMany({})
+            return res.json({message: 'Nuked'})
+
+        } catch (e) {
+            console.log(e)
+            return res.json({message: 'Nuke error'})
+
         }
     }
 }
 
 module.exports = new FileController()
+
+interface IReqFile {
+    body: {
+        name: string
+        type: string
+        parent: string
+    }
+}

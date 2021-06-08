@@ -82,7 +82,7 @@ export function uploadFile(files: Array<any> , dirId: string){
 export function dropTo(file: IFile, folderId: string) {
     return async (dispatch: any) => {
         try{
-            const response= await instance.post(`/dropTo`,
+            const response= await instance.post(`/files/dropTo`,
                 {
                     fileId: file._id,
                     folderId: folderId
