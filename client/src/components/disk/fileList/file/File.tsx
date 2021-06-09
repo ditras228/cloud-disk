@@ -1,14 +1,13 @@
-import React, {useEffect, useState} from 'react'
-import {Button, ButtonGroup, Card, Col, Container, Fade, InputGroup, Row} from 'react-bootstrap'
-import {useDispatch, useSelector} from 'react-redux'
-import {deleteFile, downloadFile, dropTo} from '../../../../redux/actions/file'
+import React, {useState} from 'react'
+import {Button, ButtonGroup, Card, Col, Container, Fade, OverlayTrigger, Row, Tooltip} from 'react-bootstrap'
+import {useDispatch} from 'react-redux'
+import {deleteFile, downloadFile} from '../../../../redux/actions/file'
 import {CloudDownloadFill, FileEarmark, Folder, Link45deg, TrashFill} from 'react-bootstrap-icons'
 import {IFile} from '../../../../types/types'
-import {CurrentDir, GetHand} from '../../../../redux/selectors'
 import sizeFormat from '../../../utils/sizeFormat'
 import {actions} from '../../../../redux/actions/actions'
 import classes from './File.module.css'
-import 'react-dragswitch/dist/index.css'
+
 export {}
 const FileFC: React.FC<FileProps> = ({file, view}) => {
     const dispatch = useDispatch()
@@ -29,7 +28,7 @@ const FileFC: React.FC<FileProps> = ({file, view}) => {
 
     function downloadClickHandler(e: React.MouseEvent<HTMLElement, MouseEvent>) {
         e.stopPropagation()
-        downloadFile(file)
+        dispatch(downloadFile(file))
     }
 
     function getName(name: string) {
@@ -44,18 +43,29 @@ const FileFC: React.FC<FileProps> = ({file, view}) => {
     if (view === 'grid') {
         return (
             <Fade in={fade}>
-            <Card className={classes.item}>
+            <Card
+                className={classes.item}
+                onClick={() => openDirHandler()}
+                onMouseDown={(e: any)=>dispatch(actions.file.setHand(e.currentTarget))}
+                draggable={true}
+                onDragOver={(e:any)=>dragOverHandler(e) }
+                onDragLeave={(e:any)=>dragLeaveHandler(e) }
+                onDragStart={(e:any)=>dragStartHandler(e) }
+                onDragEnd={(e:any)=>dragEndHandler(e) }
+
+            >
                 <div className={classes.body}>
+
+                    <div className={classes.i}>
+                        {
+                            file.type === 'dir' ? <Folder/> : <FileEarmark/>
+                        }
+                    </div>
                     <div className={classes.name}>
                         {
                             file.type === 'dir'
                                 ? file.name
                                 : getName(file.name)[0].slice(0, 9) + '...'
-                        }
-                    </div>
-                    <div className={classes.i}>
-                        {
-                            file.type === 'dir' ? <Folder/> : <FileEarmark/>
                         }
                     </div>
                 </div>
@@ -107,8 +117,6 @@ const FileFC: React.FC<FileProps> = ({file, view}) => {
     function dragEndHandler(e: any) {
         e.currentTarget.style.display='block'
         dispatch(actions.upload.byDrop(true))
-        console.log('2')
-
     }
 
     return (
@@ -140,15 +148,44 @@ const FileFC: React.FC<FileProps> = ({file, view}) => {
                 <Col style={{display: 'flex', alignItems: 'center'}} sm={2}> {sizeFormat(file.size)}</Col>
                     <Col sm={2} className={classes.buttons} >
                         <ButtonGroup >
+                            <OverlayTrigger
+                                placement={'bottom'}
+                                overlay={
+                                    <Tooltip id={`tooltip-trash`}>
+                                       Удалить
+                                    </Tooltip>
+                                }
+                            >
                             <Button onClick={e => deleteClickHandler(e)}>
                                 <TrashFill/>
                             </Button>
-                            <Button onClick={e => downloadClickHandler(e)}>
-                                <CloudDownloadFill/>
-                            </Button>
-                            <Button onClick={e => downloadClickHandler(e)}>
-                                <Link45deg/>
-                            </Button>
+                            </OverlayTrigger>
+
+                            <OverlayTrigger
+                                placement={'bottom'}
+                                overlay={
+                                    <Tooltip id={`tooltip-download`}>
+                                        Скачать
+                                    </Tooltip>
+                                }
+                            >
+                                <Button onClick={e => downloadClickHandler(e)}>
+                                    <CloudDownloadFill/>
+                                </Button>
+                            </OverlayTrigger>
+
+                            <OverlayTrigger
+                                placement={'bottom'}
+                                overlay={
+                                    <Tooltip id={`tooltip-share`}>
+                                        Поделиться
+                                    </Tooltip>
+                                }
+                            >
+                                <Button onClick={e => downloadClickHandler(e)}>
+                                    <Link45deg/>
+                                </Button>
+                            </OverlayTrigger>
                             </ButtonGroup>
                     </Col>
             </Row>

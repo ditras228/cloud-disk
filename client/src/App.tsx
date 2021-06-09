@@ -8,6 +8,7 @@ import {auth} from './redux/actions/user'
 import Disk from './components/disk/Disk'
 import {IsAuth} from './redux/selectors'
 import Profile from './components/profile/Profile'
+import Share from './components/share/Share'
 
 function App() {
     const isAuth = useSelector(state => IsAuth(state))
@@ -29,6 +30,7 @@ function App() {
                 <Switch>
                     <Route exact path={'/'} component={Disk}/>
                     <Route exact path={'/profile'} component={Profile}/>
+                    <Route path={'/share'} component={Share}/>
                     <Redirect to={'/'}/>
                 </Switch>
             }

@@ -1,7 +1,6 @@
 import {baseURL, instance} from '../../components/api/api'
 import {actions} from './actions'
 import {IFile} from '../../types/types'
-
 export const getFiles = (dirId: any, sort: string | null) => {
     return async (dispatch: any)  => {
         try {
@@ -97,24 +96,25 @@ export function dropTo(file: IFile, folderId: string) {
     }
 
 }}
-export async function downloadFile(file: any) {
-    const response = await fetch(`${baseURL}/api/files/download?id=${file._id}`, {
-        headers: {
-            Authorization: `Bearer ${localStorage.getItem('token')}`
+export  function downloadFile(file: any) {
+    return async (dispatch: any) => {
+        const response = await fetch(`${baseURL}/api/files/download?id=${file._id}`, {
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem('token')}`
+            }
+        })
+        if (response.status === 200) {
+            const blob = await response.blob()
+            const downloadUrl = window.URL.createObjectURL(blob)
+            const link = document.createElement('a')
+            link.href = downloadUrl
+            link.download = file.name
+            document.body.appendChild(link)
+            link.click()
+            link.remove()
         }
-    })
-    if (response.status === 200) {
-        const blob = await response.blob()
-        const downloadUrl = window.URL.createObjectURL(blob)
-        const link = document.createElement('a')
-        link.href = downloadUrl
-        link.download = file.name
-        document.body.appendChild(link)
-        link.click()
-        link.remove()
     }
 }
-
 export function deleteFile(file: any) {
     return async (dispatch: any)  => {
         try {

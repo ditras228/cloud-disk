@@ -2,7 +2,7 @@ import React, {DOMAttributes, useEffect, useState} from 'react'
 import {useDispatch, useSelector} from 'react-redux'
 import {createDir, dropTo, getFiles, uploadFile} from '../../redux/actions/file'
 import FileList from './fileList/FileList'
-import {Button, Container, Dropdown, Form} from 'react-bootstrap'
+import {Button, ButtonGroup, Container, Dropdown, Form, OverlayTrigger, Tooltip} from 'react-bootstrap'
 import {
     CurrentDir,
     DirStack,
@@ -13,13 +13,14 @@ import {
     Loader
 } from '../../redux/selectors'
 import CreateDirModal from '../modal/CreateDirModal'
-import {CloudUploadFill, Grid3x3GapFill, List} from 'react-bootstrap-icons'
+import {CloudUploadFill, Grid3x3GapFill, List, TrashFill} from 'react-bootstrap-icons'
 import {DragEvent} from 'react'
 import Uploader from './uploader/Uploader'
 import LoaderFC from '../loader/LoaderFC'
 import classes from './Disk.module.css'
 import {actions} from '../../redux/actions/actions'
 import NavFolder from './fileList/navFolder/navFolder'
+import ToastFC from '../toast/Toast'
 
 const Disk = () => {
     const dispatch = useDispatch()
@@ -121,14 +122,35 @@ const Disk = () => {
                         <div className={classes.options}>
                             {!isMobile &&
                             <div className={classes.view}>
-                                <Button variant={'outline-danger'}
-                                        onClick={() => setView('grid')}>
-                                    <Grid3x3GapFill/>
-                                </Button>
-                                <Button variant={'outline-danger'}
-                                        onClick={() => setView('list')}>
-                                    <List/>
-                                </Button>
+
+                                <OverlayTrigger
+                                    placement={'bottom'}
+                                    overlay={
+                                        <Tooltip id={`tooltip-grid`}>
+                                            Сетка
+                                        </Tooltip>
+                                    }
+                                >
+                                    <Button variant={'outline-danger'}
+                                            onClick={() => setView('grid')}>
+                                        <Grid3x3GapFill/>
+                                    </Button>
+                                </OverlayTrigger>
+
+                                <OverlayTrigger
+                                    placement={'bottom'}
+                                    overlay={
+                                        <Tooltip id={`tooltip-list`}>
+                                            Список
+                                        </Tooltip>
+                                    }
+                                >
+                                    <Button variant={'outline-danger'}
+                                            onClick={() => setView('list')}>
+                                        <List/>
+                                    </Button>
+                                </OverlayTrigger>
+
                             </div>
                             }
                             <DropdownBtn setSort={setSort}/>
@@ -152,6 +174,7 @@ const Disk = () => {
                     <FileList view  ={view} setView={setView}/>
                     <Uploader/>
                 </Container>
+                <ToastFC/>
             </div>
             :
             <div className={classes.dropArea} onDrop={dropHandler} onDragEnter={dragEnterHandler}

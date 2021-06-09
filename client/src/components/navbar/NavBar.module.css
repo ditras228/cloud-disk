@@ -15,7 +15,9 @@
 .brand{
     display: flex;
     font-size: 23px;
-
+}
+.brand:hover{
+    cursor: pointer;
 }
 @media  (max-width: 992px) {
     .search{

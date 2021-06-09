@@ -1,10 +1,10 @@
 import React, {useState} from 'react'
-import {Button, Form, FormControl, InputGroup, Navbar} from "react-bootstrap";
+import {Button, Form, FormControl, InputGroup, Navbar, OverlayTrigger, Tooltip} from 'react-bootstrap'
 import {useHistory} from "react-router";
 import {useDispatch, useSelector} from "react-redux";
 import {getFiles, searchFiles} from "../../redux/actions/file";
 import {appReducerAction} from "../../redux/reducers/appReducer";
-import {Disc, Search} from "react-bootstrap-icons";
+import {Disc, List, Search} from 'react-bootstrap-icons'
 import {CurrentDir, IsAuth} from '../../redux/selectors'
 import {userReducerAction} from '../../redux/reducers/userReducer'
 import classes from './NavBar.module.css'
@@ -36,7 +36,19 @@ const NavBar = () => {
 
     return (
         <Navbar bg="light" expand="lg" style={{marginBottom: 20}}>
-            <Navbar.Brand className={classes.brand}><Disc className={classes.disc}/>MERNDisk</Navbar.Brand>
+    
+            <OverlayTrigger
+                placement={'bottom'}
+                overlay={
+                    <Tooltip id={`tooltip-logo`}>
+                        Главная страница MERNDisk
+                    </Tooltip>
+                }
+            >
+                <Navbar.Brand className={classes.brand}><Disc className={classes.disc}/>MERNDisk</Navbar.Brand>
+            </OverlayTrigger>
+
+
             <Navbar.Toggle aria-controls="basic-navbar-nav"/>
 
             <Navbar.Collapse id="basic-navbar-nav">
