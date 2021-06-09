@@ -9,8 +9,9 @@ const defaultState = {
         name: 'Мой диск'
     } as unknown as IFile] as Array<IFile>,
     hand: null as any,
-    dropTo: null as string | null
-
+    dropTo: null as string | null,
+    thisFile: null as IFile | null,
+    isShare: false as boolean
 }
 
 export default function fileReducer(state = defaultState, action:fileReducerActionType) {
@@ -30,6 +31,10 @@ export default function fileReducer(state = defaultState, action:fileReducerActi
             return {...state,  hand: action.payload}
         case 'DROP_TO_FOLDER':
             return {...state,  dropTo: action.payload}
+        case 'SET_THIS_FILE':
+            return {...state,  thisFile: action.payload}
+        case 'IS_SHARE':
+            return {...state,  isShare: action.payload}
         default:
             return state
     }
@@ -41,7 +46,9 @@ export const fileReducerAction = {
     pushToStack: (dir: IFile) => ({type: 'PUSH_TO_STACK', payload: dir} as const),
     deleteFileAction: (dirId: string) => ({type: 'DELETE_FILE', payload: dirId} as const),
     setHand: (file: any) => ({type: 'SET_HAND', payload: file} as const),
-    dropToFolder: (fileId: string) => ({type: 'DROP_TO_FOLDER', payload: fileId} as const)
+    dropToFolder: (fileId: string) => ({type: 'DROP_TO_FOLDER', payload: fileId} as const),
+    setThisFile: (file: IFile) => ({type: 'SET_THIS_FILE', payload: file} as const),
+    isShare: (value: boolean) => ({type: 'IS_SHARE', payload: value} as const)
 }
 
 export type fileReducerActionType = InferActionsTypes<typeof fileReducerAction>

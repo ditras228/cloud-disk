@@ -4,11 +4,11 @@ import Registration from './components/registration/Registration'
 import Auth from './components/login/Login'
 import {useDispatch, useSelector} from 'react-redux'
 import {useEffect} from 'react'
-import {auth} from './redux/actions/user'
 import Disk from './components/disk/Disk'
 import {IsAuth} from './redux/selectors'
 import Profile from './components/profile/Profile'
 import Share from './components/share/Share'
+import {auth} from './redux/actions/user'
 
 function App() {
     const isAuth = useSelector(state => IsAuth(state))

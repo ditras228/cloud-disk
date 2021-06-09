@@ -1,6 +1,6 @@
 import React from 'react'
-import {Card, Col, Container, ProgressBar} from 'react-bootstrap'
-import {Disc, Mailbox, Upload} from 'react-bootstrap-icons'
+import {Button, Card, Col, Container, OverlayTrigger, ProgressBar, Row, Tooltip} from 'react-bootstrap'
+import {Disc, Mailbox, TrashFill, Upload} from 'react-bootstrap-icons'
 import {useDispatch, useSelector} from 'react-redux'
 import {uploadAvatar} from '../../redux/actions/user'
 import {GetUser} from '../../redux/selectors'
@@ -48,16 +48,29 @@ const Profile = () => {
                                     className={classes.input}
                                 />
                         <Col className={classes.desc}>
-                                <div className={classes.title}>
-                                    <div><Mailbox/> Почта</div>
+                                <Row className={classes.title}>
+                                    <Col><Mailbox/> Почта</Col>
                                     {user.email}
-                                </div>
-                                 <div className={classes.title}>
-                                <div><Disc/> Место на диске</div>
+                                </Row>
+                                <Row className={classes.title}>
+                                    <Col>
+                                        <Disc/> Место на диске
+                                    </Col>
                                      {sizeFormat(user.usedSpace)}
                                      /{sizeFormat(user.diskSpace)}
-                                </div>
+                                </Row>
+
+
+                            <OverlayTrigger
+                                placement={'bottom'}
+                                overlay={
+                                    <Tooltip id={`tooltip-trash`}>
+                                        {diskPercent}
+                                    </Tooltip>
+                                }
+                            >
                                 <ProgressBar  striped variant="success" now={diskPercent} />
+                            </OverlayTrigger>
                         </Col>
                         </div>
                 </Card.Body>

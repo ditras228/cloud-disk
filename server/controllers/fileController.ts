@@ -254,9 +254,12 @@ class FileController {
             const folderId = req.body.folderId
             const file = await FileSchema.findOne({_id: fileId, user: req.user._id}) as IFile
             const folder = await FileSchema.findOne({_id: folderId, user: req.user._id}) as IFile
-            file.path = folder.path+file.name
+            const newPath = `${folder.path}/${file.name}`
+            fs.rename(`${req.filePath}/${file.path}`, `${req.filePath}/${newPath}`,  ()=>{
+                console.log('File moved')
+            })
+            file.path = newPath
             file.parent = folder._id
-            fs.move(file.path, )
             await file.save()
             return res.json({message: file})
         }catch(e){

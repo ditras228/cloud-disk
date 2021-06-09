@@ -1,6 +1,5 @@
 import React from 'react'
 import {Toast} from 'react-bootstrap'
-import {IFile} from '../../types/types'
 
 const ToastFC = () => {
     return (

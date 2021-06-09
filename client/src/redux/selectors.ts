@@ -41,3 +41,9 @@ export const GetDirStack = (state: any)=>{
 export const GetDropTo = (state: any)=>{
     return state.file.dropTo
 }
+export const GetThisFile = (state: any)=>{
+    return state.file.thisFile
+}
+export const GetIsShare = (state: any)=>{
+    return state.file.isShare
+}

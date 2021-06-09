@@ -38,15 +38,15 @@ export const createDir = (dirId: string, name: string) => {
 export function uploadFile(files: Array<any> , dirId: string){
     return async (dispatch: any)  => {
         try {
-            let uploadFile: { name: string; progress: number; id: number } | null = null
+            let uploadFile: IFile | { name: any; progress: number; id: any }[]= []
 
             const formData = new FormData()
-            files.forEach(file=>{
-               formData.append('file', file)
-               formData.append('webkitRelativePath', file.webkitRelativePath)
-               uploadFile = {name: file.name, progress: 0, id: Date.now()}
-               dispatch(actions.upload.addUploadFiles(uploadFile))
-            })
+            for(let i =0; i<files.length; i++){
+               formData.append('file', files[i])
+               formData.append('webkitRelativePath',  files[i].webkitRelativePath)
+               uploadFile.push({name: files[i].name, progress: 0, id: i})
+               dispatch(actions.upload.addUploadFiles(uploadFile[i]))
+            }
 
             if (dirId) {
                 formData.append('parent', dirId)

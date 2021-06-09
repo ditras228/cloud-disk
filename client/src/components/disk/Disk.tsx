@@ -8,7 +8,7 @@ import {
     DirStack,
     GetDropTo,
     GetHand,
-    GetIsMobile,
+    GetIsMobile, GetThisFile,
     GetUploadFilesByDrop,
     Loader
 } from '../../redux/selectors'
@@ -21,6 +21,8 @@ import classes from './Disk.module.css'
 import {actions} from '../../redux/actions/actions'
 import NavFolder from './fileList/navFolder/navFolder'
 import ToastFC from '../toast/Toast'
+import ShareModal from '../modal/ShareModal'
+import {IFile} from '../../types/types'
 
 const Disk = () => {
     const dispatch = useDispatch()
@@ -38,6 +40,7 @@ const Disk = () => {
     const[backButton, setBackButton] = useState(true)
     const dropToFolder = useSelector(state=>GetDropTo(state))
     const hand = useSelector(state=>GetHand(state))
+    const thisFile = useSelector(state=>GetThisFile(state)) as IFile
 
     useEffect(() => {
         if(hand && dropToFolder)
@@ -173,6 +176,7 @@ const Disk = () => {
                     <NavFolder/>
                     <FileList view  ={view} setView={setView}/>
                     <Uploader/>
+                    <ShareModal file={thisFile}/>
                 </Container>
                 <ToastFC/>
             </div>

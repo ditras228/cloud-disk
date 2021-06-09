@@ -25,7 +25,11 @@ const FileFC: React.FC<FileProps> = ({file, view}) => {
         e.stopPropagation()
         dispatch(deleteFile(file))
     }
-
+    function shareFile(e: React.MouseEvent<HTMLElement, MouseEvent>){
+        e.stopPropagation()
+        dispatch(actions.file.setThisFile(file))
+        dispatch(actions.file.isShare(true))
+    }
     function downloadClickHandler(e: React.MouseEvent<HTMLElement, MouseEvent>) {
         e.stopPropagation()
         dispatch(downloadFile(file))
@@ -182,7 +186,7 @@ const FileFC: React.FC<FileProps> = ({file, view}) => {
                                     </Tooltip>
                                 }
                             >
-                                <Button onClick={e => downloadClickHandler(e)}>
+                                <Button onClick={e=> shareFile(e)}>
                                     <Link45deg/>
                                 </Button>
                             </OverlayTrigger>

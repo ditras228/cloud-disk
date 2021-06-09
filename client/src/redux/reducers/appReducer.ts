@@ -2,7 +2,7 @@ import {InferActionsTypes} from './index'
 
 const defaultState = {
     loader: false,
-        error: ''
+    error: '',
 }
 export default function appReducer(state = defaultState, action:appReducerActionType) {
     switch (action.type) {
@@ -20,6 +20,5 @@ export const appReducerAction = {
     showLoader: () => ({type: 'SHOW_LOADER'} as const),
     hideLoader: () => ({type: 'HIDE_LOADER'} as const),
     error: (error:string) => ({type: 'ERRORS', payload: error} as const),
-    initializeApp: (error:string) => ({type: 'ERRORS', payload: error} as const),
 }
 export type appReducerActionType = InferActionsTypes<typeof appReducerAction>
