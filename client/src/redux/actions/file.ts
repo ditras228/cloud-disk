@@ -18,6 +18,8 @@ export const getFiles = (dirId: any, sort: string | null) => {
             dispatch(actions.file.setFiles(response.data))
         } catch (e) {
             console.log(e)
+        } finally {
+            dispatch(actions.app.hideLoader())
         }
     }
 }
@@ -43,10 +45,10 @@ export function uploadFile(files: Array<any> , dirId: string){
 
             const formData = new FormData()
             for(let i =0; i<files.length; i++){
-               formData.append('file', files[i])
-               formData.append('webkitRelativePath',  files[i].webkitRelativePath)
-               uploadFile.push({name: files[i].name, progress: 0, id: i})
-               dispatch(actions.upload.addUploadFiles(uploadFile[i]))
+                   formData.append('file', files[i])
+                   formData.append('webkitRelativePath',  files[i].webkitRelativePath)
+                   uploadFile.push({name: files[i].name, progress: 0, id: i})
+                   dispatch(actions.upload.addUploadFiles(uploadFile[i]))
             }
 
             if (dirId) {

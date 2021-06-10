@@ -77,7 +77,7 @@ class FileController {
     async uploadFile(req: Request & IReq & IReqFile, res: Response & IRes) {
         try {
             const webkitRelativePath = req.body.webkitRelativePath as unknown as Array<string>
-            const files = req.files?.file as Array<IFile> | any
+            let files = req.files?.file as Array<IFile> | any
             let parent = await FileSchema.findOne({user: req.user._id, _id: req.body.parent}) as IFile
             const user = await UserSchema.findOne({_id: req.user._id}) as IUser
             let dbFiles = [] as Array<IFile> | any
@@ -85,6 +85,9 @@ class FileController {
             let folder = null as IFile | null
             let fistFolder = null as IFile | null
 
+            if(!files.length){
+                files=[files]
+            }
             for (let i = 0; i < files?.length; i++) {
 
                 if (user.usedSpace + files[i].size > user.diskSpace) {

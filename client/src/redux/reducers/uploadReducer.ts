@@ -1,5 +1,4 @@
 import {InferActionsTypes} from './index'
-import {IFile} from '../../types/types'
 
 const defaultState = {
     isVisible: false,

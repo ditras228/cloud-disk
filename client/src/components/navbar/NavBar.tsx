@@ -8,13 +8,14 @@ import {Disc, List, Search} from 'react-bootstrap-icons'
 import {CurrentDir, IsAuth} from '../../redux/selectors'
 import {userReducerAction} from '../../redux/reducers/userReducer'
 import classes from './NavBar.module.css'
+import {IFile} from '../../types/types'
 
 const NavBar = () => {
     const history = useHistory()
     const dispatch = useDispatch()
     
-    const isAuth = useSelector(state=> IsAuth(state))
-    const currentDir = useSelector(state => CurrentDir(state))
+    const isAuth = useSelector(state=> IsAuth(state)) as boolean
+    const currentDir = useSelector(state => CurrentDir(state)) as IFile
 
     const [searchName, setSearchName] = useState('')
     const [searchTimeout, setSearchTimeout] = useState(false as any)
@@ -30,7 +31,7 @@ const NavBar = () => {
                 dispatch(searchFiles(e.target.value))
             }, 500))
         else {
-            dispatch(getFiles(currentDir, null))
+            dispatch(getFiles(currentDir?._id, ''))
         }
     }
 

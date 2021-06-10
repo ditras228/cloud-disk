@@ -33,20 +33,19 @@ const Disk = () => {
     const [sort, setSort] = useState('type')
     const [view, setView] = useState('list')
     const [dragEnter, setDragEnter] = useState(false)
-    const [width, setWidth] = useState(0);
+    const [width, setWidth] = useState(0)
     const byDrop = useSelector(GetUploadFilesByDrop)
     const isMobile = useSelector(state => GetIsMobile(state))
-    const folderInput= React.useRef(null)
+    const folderInput = React.useRef(null)
     const [backButton, setBackButton] = useState(true)
-    const dropToFolder = useSelector(state=>GetDropTo(state))
-    const hand = useSelector(state=>GetHand(state))
-    const thisFile = useSelector(state=>GetThisFile(state)) as IFile
+    const dropToFolder = useSelector(state => GetDropTo(state)) as string
+    const hand = useSelector(state => GetHand(state)) as IFile
+    const thisFile = useSelector(state => GetThisFile(state)) as IFile
 
     useEffect(() => {
-        if(hand && dropToFolder)
+        if (hand && dropToFolder && byDrop)
             dispatch(dropTo(hand, dropToFolder))
-
-    },[dropToFolder])
+    }, [hand,dropToFolder, byDrop])
 
     useEffect(() => {
         dispatch(getFiles(currentDir?._id, sort))
@@ -54,22 +53,23 @@ const Disk = () => {
 
     useEffect(() => {
         const updateWindowDimensions = () => {
-            const newWidth = window.innerWidth;
-            setWidth(newWidth);
-        };
-        window.addEventListener("resize", updateWindowDimensions);
-        return () => window.removeEventListener("resize", updateWindowDimensions)
-    }, [width]);
-    useEffect(()=>{
-            dirStack.length<=1
-                ?setBackButton(true)
-                :setBackButton(false)
-    },[dirStack.length])
+            const newWidth = window.innerWidth
+            setWidth(newWidth)
+        }
+        window.addEventListener('resize', updateWindowDimensions)
+        return () => window.removeEventListener('resize', updateWindowDimensions)
+    }, [width])
+    useEffect(() => {
+        console.log(dirStack)
+        dirStack.length <= 1
+            ? setBackButton(true)
+            : setBackButton(false)
+    }, [dirStack.length])
     useEffect(() => {
         if (window.innerWidth < 1000) {
             dispatch(actions.user.setMobile(true))
             setView('grid')
-        }else{
+        } else {
             dispatch(actions.user.setMobile(false))
             setView('list')
         }
@@ -80,8 +80,9 @@ const Disk = () => {
     }
 
     function backClickHandler() {
-        const backDirId =   dirStack.pop()
+        const backDirId = dirStack.pop()
         dispatch(actions.file.setCurrentDir(backDirId._id))
+
     }
 
     function fileUploadHandler(event: { target: { files: any } }) {
@@ -110,13 +111,17 @@ const Disk = () => {
         dispatch(actions.upload.showUploader())
         setDragEnter(false)
     }
+
     if (loader) {
         return <LoaderFC/>
     }
-    return (!dragEnter?
-            <div onDragEnter={e=> byDrop? dragEnterHandler(e): ()=>{}}
-                 onDragLeave={e=> byDrop?dragLeaveHandler(e):()=>{}}
-                 onDragOver={e=> byDrop?dragEnterHandler(e): ()=>{}}>
+    return (!dragEnter ?
+            <div onDragEnter={e => byDrop ? dragEnterHandler(e) : () => {
+            }}
+                 onDragLeave={e => byDrop ? dragLeaveHandler(e) : () => {
+                 }}
+                 onDragOver={e => byDrop ? dragEnterHandler(e) : () => {
+                 }}>
                 <Container style={{marginBottom: 20}}>
                     <div className={classes.tools}>
                         <Button onClick={backClickHandler} disabled={backButton}>Назад</Button>
@@ -160,24 +165,55 @@ const Disk = () => {
                         </div>
 
                     </div>
-                    <DropdownButton id="dropdown-basic-button" title="Загрузить">
-                        <Dropdown.Item href="#/action-1"><FileEarmark className={classes.dropdown_i}/> Загрузить файл</Dropdown.Item>
-                        <Dropdown.Item href="#/action-2"><Folder className={classes.dropdown_i}/> Загрузить папку</Dropdown.Item>
-                    </DropdownButton>
-                    <Form className={classes.uploadBtn}>
-                        <Form.File
-                            id="custom-file-translate-scss"
-                            label="Загрузить"
-                            lang="ru"
-                            custom
-                            webkitdirectory={''} directory={''}
-                            multiple={true} type="file" onChange={fileUploadHandler}
-                            ref={folderInput}
-                        />
-                    </Form>
+                    {isMobile
+                        ?
+                        <Form className={classes.uploadBtn}>
+                            <Form.File
+                                id="custom-file-translate-scss"
+                                type="file"
+                                label="Загрузить"
+                                lang="ru"
+                                custom
+                                multiple={true}
+                                onChange={fileUploadHandler}
+                                ref={folderInput}
+                            />
+                        </Form>
+                        :
+                        <DropdownButton id="dropdown-basic-button" title="Загрузить" className={classes.uploadBtn}>
+                            <label htmlFor="file_input"
+                            className={classes.dropdown_item}>
+                                <div>
+                                    <FileEarmark className={classes.dropdown_i}/>
+                                    Загрузить файл
+                                </div>
+                            </label>
+                            <label htmlFor="folder_input"
+                                   className={classes.dropdown_item}>
+                                <Folder className={classes.dropdown_i}/>
+                                Загрузить папку
+                            </label>
+                        </DropdownButton>
+                    }
+                    <input id={'file_input'}
+                           type="file"
+                           multiple={true}
+                           onChange={fileUploadHandler}
+                           ref={folderInput}
+                           className={classes.hideInput}
+                    />
+                    <input id={'folder_input'}
+                           type="file"
+                           webkitdirectory={''}
+                           directory={''}
+                           multiple={true}
+                           onChange={fileUploadHandler}
+                           ref={folderInput}
+                           className={classes.hideInput}
+                    />
                     <CreateDirModal show={show} setShow={setShow} createDirHandler={createDirHandler}/>
                     <NavFolder/>
-                    <FileList view  ={view} setView={setView}/>
+                    <FileList view={view} setView={setView}/>
                     <Uploader/>
                     <ShareModal file={thisFile}/>
                 </Container>

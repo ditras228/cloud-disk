@@ -31,6 +31,8 @@ export default function fileReducer(state = defaultState, action:fileReducerActi
             return {...state,  hand: action.payload}
         case 'DROP_TO_FOLDER':
             return {...state,  dropTo: action.payload}
+        case 'UN_DROP_TO_FOLDER':
+            return {...state,  dropTo: null}
         case 'SET_THIS_FILE':
             return {...state,  thisFile: action.payload}
         case 'IS_SHARE':
@@ -47,6 +49,7 @@ export const fileReducerAction = {
     deleteFileAction: (dirId: string) => ({type: 'DELETE_FILE', payload: dirId} as const),
     setHand: (file: any) => ({type: 'SET_HAND', payload: file} as const),
     dropToFolder: (fileId: string) => ({type: 'DROP_TO_FOLDER', payload: fileId} as const),
+    unDropToFolder: () => ({type: 'UN_DROP_TO_FOLDER'} as const),
     setThisFile: (file: IFile) => ({type: 'SET_THIS_FILE', payload: file} as const),
     isShare: (value: boolean) => ({type: 'IS_SHARE', payload: value} as const)
 }

@@ -1,6 +1,6 @@
 import React, {useState} from 'react'
 import {Button, ButtonGroup, Card, Col, Container, Fade, OverlayTrigger, Row, Tooltip} from 'react-bootstrap'
-import {useDispatch} from 'react-redux'
+import {useDispatch, useSelector} from 'react-redux'
 import {deleteFile, downloadFile} from '../../../../redux/actions/file'
 import {CloudDownloadFill, FileEarmark, Folder, Link45deg, TrashFill} from 'react-bootstrap-icons'
 import {IFile} from '../../../../types/types'
@@ -12,7 +12,7 @@ export {}
 const FileFC: React.FC<FileProps> = ({file, view}) => {
     const dispatch = useDispatch()
     const [fade, setFade] = useState(false)
-    const [isOver, setIsOver] = useState(false)
+    const [over, setOver] = useState(null) as any
 
     function openDirHandler() {
         if (file.type === 'dir') {
@@ -55,7 +55,7 @@ const FileFC: React.FC<FileProps> = ({file, view}) => {
                 onDragOver={(e:any)=>dragOverHandler(e) }
                 onDragLeave={(e:any)=>dragLeaveHandler(e) }
                 onDragStart={(e:any)=>dragStartHandler(e) }
-                onDragEnd={(e:any)=>dragEndHandler(e) }
+                onDragEnd={(e:any)=>dropHandler(e) }
 
             >
                 <div className={classes.body}>
@@ -87,26 +87,15 @@ const FileFC: React.FC<FileProps> = ({file, view}) => {
         )
     }
     function dragOverHandler(e: any) {
+        e.preventDefault()
         e.stopPropagation()
-
         e.currentTarget.style.border='2px solid gray'
-        setIsOver(true)
-        setTimeout(()=>{
-            setIsOver(false)
-        }, 20)
-
+        setOver(e.currentTarget)
     }
 
     function dragLeaveHandler(e: any) {
-        const fileId=e.currentTarget.getAttribute('fileId')
-        const fileType=e.currentTarget.getAttribute('fileType')
-        
-        if(fileType==='dir' && isOver){
-            e.currentTarget.style.border='2px solid transparent'
-            dispatch(actions.file.dropToFolder(fileId))
-        }
-       
-
+        e.currentTarget.style.border='2px solid transparent'
+        setOver(null)
     }
 
     function dragStartHandler(e: any) {
@@ -117,10 +106,22 @@ const FileFC: React.FC<FileProps> = ({file, view}) => {
             target.display='none'
         }, 0)
     }
-
     function dragEndHandler(e: any) {
         e.currentTarget.style.display='block'
         dispatch(actions.upload.byDrop(true))
+
+    }
+    function dropHandler(e: any) {
+        const fileId=over.getAttribute('fileId')
+        const fileType=over.getAttribute('fileType')
+
+        if(fileType==='dir' && over) {
+            e.currentTarget.style.border = '2px solid transparent'
+            dispatch(actions.file.dropToFolder(fileId))
+        }else{
+            dispatch(actions.file.unDropToFolder())
+        }
+
     }
 
     return (
@@ -132,6 +133,7 @@ const FileFC: React.FC<FileProps> = ({file, view}) => {
             onDragOver={(e:any)=>dragOverHandler(e) }
             onDragLeave={(e:any)=>dragLeaveHandler(e) }
             onDragStart={(e:any)=>dragStartHandler(e) }
+            onDrop={(e:any)=>dropHandler(e) }
             onDragEnd={(e:any)=>dragEndHandler(e) }
             className={classes.item_list}
             fileId={file._id}

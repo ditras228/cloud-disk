@@ -27,9 +27,24 @@
 .dropdown{
     display: inline-block;
 }
+.dropdown_item{
+    display: block;
+    padding: 10px;
+    margin-bottom: 0;
+}
+.dropdown_i{
+    margin-right: 10px;
+}
+.dropdown_item:hover {
+    background-color: whitesmoke;
+    cursor: pointer;
+}
 .uploadBtn{
     margin-bottom: 20px;
 }
 .path{
-    font-size: 20px
+    font-size: 20px;
+}
+.hideInput{
+    display: none;
 }
