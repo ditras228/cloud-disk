@@ -42,7 +42,7 @@ router.post('/registration',
 
             }
             await FileService.createDir(req, new FileSchema({user: user._id, name: '', path: user._id}))
-            return res.status(200).json({message: 'Registration succe   ss'})
+            return res.status(200).json({message: 'Registration success'})
         } catch (e) {
             console.log(e)
             res.send({message: 'Server error'})
@@ -104,10 +104,14 @@ router.delete('/user', authMiddleware,
     async (req: Request & IReq, res: Response & IRes)=>{
         try{
             const user = await UserSchema.findOneAndDelete({_id: req.user._id}) as IUser
-            return res.json({message: `User was deleted`})
+            return res.json({message: `User ${user.email} was deleted`})
         }catch(e){
             console.log(e)
             return res.json({message:'Delete user error'})
         }
     })
+
+
+
+
 module.exports = router

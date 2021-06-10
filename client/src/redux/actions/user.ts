@@ -5,11 +5,13 @@ import {appReducerAction} from '../reducers/appReducer'
 export const registration =  (email: string, password: string) => {
     return async (dispatch: any)  => {
         try {
-            await instance.post('auth/registration/', {
+            const response = await instance.post('auth/registration/', {
                 email,
                 password
             })
-                
+            if(response.status==200){
+                (dispatch(userReducerAction.setRegistration()))
+            }
         } catch (e) {
             console.log(e)
             dispatch(appReducerAction.error('Пользователь с таким email уже существует'))

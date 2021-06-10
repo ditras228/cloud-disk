@@ -38,7 +38,8 @@ export const createDir = (dirId: string, name: string) => {
 export function uploadFile(files: Array<any> , dirId: string){
     return async (dispatch: any)  => {
         try {
-            let uploadFile: IFile | { name: any; progress: number; id: any }[]= []
+            dispatch(actions.upload.removeUploadFiles())
+            let uploadFile = [] as Array<any>
 
             const formData = new FormData()
             for(let i =0; i<files.length; i++){
@@ -64,7 +65,10 @@ export function uploadFile(files: Array<any> , dirId: string){
                     if (totalLength) {
                         let progress = Math.round((progressEvent.loaded * 100) / totalLength)
                         console.log(progress)
-                        dispatch(actions.upload.changeUploadProgress({...uploadFile, progress}))
+                        for(let i=0; i<uploadFile.length; i++){
+                            dispatch(actions.upload.changeUploadProgress({...uploadFile[i], progress}))
+
+                        }
                     }
                 }
             })
@@ -150,3 +154,6 @@ export function searchFiles(search: any) {
         }
     }
 }
+
+
+

@@ -47,3 +47,6 @@ export const GetThisFile = (state: any)=>{
 export const GetIsShare = (state: any)=>{
     return state.file.isShare
 }
+export const GetRegSuccess = (state: any)=>{
+    return state.user.isRegSuccess
+}

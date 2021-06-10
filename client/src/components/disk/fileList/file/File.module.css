@@ -23,7 +23,9 @@
     background-color: whitesmoke;
     cursor: pointer;
 }
-
+.dropdown_i{
+    margin-right:10px
+}
 /*List*/
 .item_list {
     padding-top: 10px;

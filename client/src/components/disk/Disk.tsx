@@ -1,20 +1,20 @@
-import React, {DOMAttributes, useEffect, useState} from 'react'
+import React, {DragEvent, useEffect, useState} from 'react'
 import {useDispatch, useSelector} from 'react-redux'
 import {createDir, dropTo, getFiles, uploadFile} from '../../redux/actions/file'
 import FileList from './fileList/FileList'
-import {Button, ButtonGroup, Container, Dropdown, Form, OverlayTrigger, Tooltip} from 'react-bootstrap'
+import {Button, Container, Dropdown, DropdownButton, Form, OverlayTrigger, Tooltip} from 'react-bootstrap'
 import {
     CurrentDir,
     DirStack,
     GetDropTo,
     GetHand,
-    GetIsMobile, GetThisFile,
+    GetIsMobile,
+    GetThisFile,
     GetUploadFilesByDrop,
     Loader
 } from '../../redux/selectors'
 import CreateDirModal from '../modal/CreateDirModal'
-import {CloudUploadFill, Grid3x3GapFill, List, TrashFill} from 'react-bootstrap-icons'
-import {DragEvent} from 'react'
+import {CloudUploadFill, FileEarmark, Folder, Grid3x3GapFill, List} from 'react-bootstrap-icons'
 import Uploader from './uploader/Uploader'
 import LoaderFC from '../loader/LoaderFC'
 import classes from './Disk.module.css'
@@ -37,7 +37,7 @@ const Disk = () => {
     const byDrop = useSelector(GetUploadFilesByDrop)
     const isMobile = useSelector(state => GetIsMobile(state))
     const folderInput= React.useRef(null)
-    const[backButton, setBackButton] = useState(true)
+    const [backButton, setBackButton] = useState(true)
     const dropToFolder = useSelector(state=>GetDropTo(state))
     const hand = useSelector(state=>GetHand(state))
     const thisFile = useSelector(state=>GetThisFile(state)) as IFile
@@ -87,7 +87,6 @@ const Disk = () => {
     function fileUploadHandler(event: { target: { files: any } }) {
         const files = [...event.target.files]
         dispatch(uploadFile(files, currentDir))
-
     }
 
     function dragEnterHandler(e: DragEvent<HTMLDivElement>) {
@@ -161,10 +160,14 @@ const Disk = () => {
                         </div>
 
                     </div>
+                    <DropdownButton id="dropdown-basic-button" title="Загрузить">
+                        <Dropdown.Item href="#/action-1"><FileEarmark className={classes.dropdown_i}/> Загрузить файл</Dropdown.Item>
+                        <Dropdown.Item href="#/action-2"><Folder className={classes.dropdown_i}/> Загрузить папку</Dropdown.Item>
+                    </DropdownButton>
                     <Form className={classes.uploadBtn}>
                         <Form.File
                             id="custom-file-translate-scss"
-                            label="Загрузить файл"
+                            label="Загрузить"
                             lang="ru"
                             custom
                             webkitdirectory={''} directory={''}
@@ -187,14 +190,6 @@ const Disk = () => {
             </div>
     )
 
-}
-declare module 'react' {
-    interface HTMLAttributes<T> extends AriaAttributes, DOMAttributes<T> {
-        directory?: string;
-        webkitdirectory?: string;
-        fileId?: string;
-        fileType?: string;
-    }
 }
 const DropdownBtn: React.FC<IDropDownBtnProps> = ({setSort}) => {
     return (

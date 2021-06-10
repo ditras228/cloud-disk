@@ -17,7 +17,7 @@ export default function uploadReducer(state = defaultState, action: UploadReduce
         case 'ADD_UPLOAD_FILES':
             return {...state, files: [...state.files, action.payload]}
         case 'REMOVE_UPLOAD_FILES':
-            return {...state, isVisible: true}
+            return {...state,   files: []}
         case 'CHANGE_UPLOAD_PROGRESS':
             return {...state,
             files: [...state.files.map((file: any)=> file.id === action.payload.id
@@ -33,7 +33,7 @@ export const uploadReducerActions = {
     showUploader: () => ({type: 'SHOW_UPLOADER'} as const),
     hideUploader: () => ({type: 'HIDE_UPLOADER'} as const),
     addUploadFiles: (file: { name: any; progress: number; id: any }) => ({type: 'ADD_UPLOAD_FILES', payload: file} as const),
-    removeUploadFiles: (fileId: string) => ({type: 'REMOVE_UPLOAD_FILES',  payload: fileId} as const),
+    removeUploadFiles: () => ({type: 'REMOVE_UPLOAD_FILES'} as const),
     changeUploadProgress: (file: any) => ({type: 'CHANGE_UPLOAD_PROGRESS',  payload: file} as const),
     byDrop: (bool: boolean) => ({type: 'UPLOAD_FILES_BY_DROP',  payload: bool} as const),
 }

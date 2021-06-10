@@ -12,7 +12,7 @@ import classes from './NavBar.module.css'
 const NavBar = () => {
     const history = useHistory()
     const dispatch = useDispatch()
-
+    
     const isAuth = useSelector(state=> IsAuth(state))
     const currentDir = useSelector(state => CurrentDir(state))
 
@@ -45,7 +45,7 @@ const NavBar = () => {
                     </Tooltip>
                 }
             >
-                <Navbar.Brand className={classes.brand}><Disc className={classes.disc}/>MERNDisk</Navbar.Brand>
+                <Navbar.Brand className={classes.brand} onClick={()=>history.push('/')}><Disc className={classes.disc}/>MERNDisk</Navbar.Brand>
             </OverlayTrigger>
 
 

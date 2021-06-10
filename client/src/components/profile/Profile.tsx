@@ -64,8 +64,8 @@ const Profile = () => {
                             <OverlayTrigger
                                 placement={'bottom'}
                                 overlay={
-                                    <Tooltip id={`tooltip-trash`}>
-                                        {diskPercent}
+                                    <Tooltip id={`tooltip-progress`}>
+                                        {`${Math.round(diskPercent)}%`}
                                     </Tooltip>
                                 }
                             >
