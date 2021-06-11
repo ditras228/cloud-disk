@@ -50,3 +50,10 @@ export const GetIsShare = (state: any)=>{
 export const GetRegSuccess = (state: any)=>{
     return state.user.isRegSuccess
 }
+export const GetTarget = (state: any)=>{
+    return state.file.target
+}
+export const GetToasts = (state: any)=>{
+    return state.app.toasts
+}
+

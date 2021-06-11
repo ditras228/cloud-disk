@@ -8,4 +8,5 @@ export interface IFile {
     data: string
     parent: string
     childs: string
+    isShare: boolean
 }

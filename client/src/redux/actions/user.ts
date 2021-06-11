@@ -41,9 +41,13 @@ export const auth = () => {
         try {
             const response = await instance.get('auth/auth',
                 {headers: {Authorization: `Bearer ${localStorage.getItem('token')}`}})
-            dispatch(userReducerAction.setUser(response.data))
-            localStorage.setItem('token', response.data.token)
-            console.log(`Bearer ${localStorage.getItem('token')}`)
+
+            if(response.status===200){
+                dispatch(userReducerAction.setUser(response.data))
+                localStorage.setItem('token', response.data.token)
+            }else{
+                localStorage.removeItem('token')
+            }
 
         } catch (e) {
             console.log(e)

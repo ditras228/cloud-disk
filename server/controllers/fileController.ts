@@ -86,7 +86,7 @@ class FileController {
             let fistFolder = null as IFile | null
 
             if(!files.length){
-                files=[files]
+                files= Array.from([files])
             }
             for (let i = 0; i < files?.length; i++) {
 
@@ -182,51 +182,64 @@ class FileController {
         }
 
     }
-    async isShare(req: Request & IReq, res: Response & IRes){
-        const file = await FileSchema.findOne({_id: req.query.id, isShare: true}) as IFile
-        file.isShare=req.body.isShare
-        return res.json(file)
+    async shareFile(req: Request & IReq, res: Response & IRes){
+        const file = await FileSchema.findOne({_id: req.body.fileId}) as IFile
+        file.isShare=!file.isShare
+        await file.save()
+        return res.json(file.isShare)
     }
-    async shareFile(req: Request & IReq, res: Response & IRes & any) {
-        const file = await FileSchema.findOne({_id: req.query.id, isShare: true}) as IFile
-        return res.json(file)
+    async getFile(req: Request & IReq, res: Response & IRes){
+        try{
+            const file = await FileSchema.findOne({_id: req.query.id}) as IFile
+            if(file.isShare){
+                return res.json(file)
+            }else{
+                return res.status(404).json({message: 'File not found'})
+            }
+        }catch(e){
+            console.log(e)
+            return res.status(404).json({message: 'File not found'})
+
+        }
     }
     async downloadFile(req: Request & IReq, res: Response & IRes & any) {
         try {
             let path: string
-            const file = await FileSchema.findOne({_id: req.query.id, user: req.user._id}) as IFile
+            const file = await FileSchema.findOne({_id: req.query.id}) as IFile
+            if(file.user == req.user._id || file.isShare==true){
 
-            if (file.parent)
-                path = `${req.filePath}/${req.user._id}/${file.path}/${file.name}`
-            else
-                path = `${req.filePath}/${req.user._id}/${file.name}`
+                if (file.parent)
+                    path = `${req.filePath}/${req.user._id}/${file.path}/${file.name}`
+                else
+                    path = `${req.filePath}/${req.user._id}/${file.name}`
 
-            if (fs.existsSync(path)) {
-                if (file.type !== 'dir') {
-                    return res.download(path, file.name)
+                if (fs.existsSync(path)) {
+                    if (file.type !== 'dir') {
+                        return res.download(path, file.name)
 
-                } else {
-                    const archivePath = `${req.filePath}/${req.user._id}/target.zip`
-                    const output = fs.createWriteStream(archivePath)
-                    const archive = archiver('zip')
+                    } else {
+                        const archivePath = `${req.filePath}/${req.user._id}/target.zip`
+                        const output = fs.createWriteStream(archivePath)
+                        const archive = archiver('zip')
 
-                    output.on('close', function () {
-                        console.log(archive.pointer() + ' total bytes')
-                        console.log('archiver has been finalized and the output file descriptor has closed.')
+                        output.on('close', function () {
+                            console.log(archive.pointer() + ' total bytes')
+                            console.log('archiver has been finalized and the output file descriptor has closed.')
 
-                    })
+                        })
 
-                    archive.on('error', function (err) {
-                        throw err
-                    })
-                    res.attachment(`${file.name}.zip`)
-                    archive.pipe(res)
-                    archive.directory(path, false)
-                    archive.finalize()
-                    return archive
+                        archive.on('error', function (err) {
+                            throw err
+                        })
+                        res.attachment(`${file.name}.zip`)
+                        archive.pipe(res)
+                        archive.directory(path, false)
+                        archive.finalize()
+                        return archive
+                    }
                 }
-
             }
+
             return res.status(500).json({message: 'Download error'})
         } catch (e) {
             console.log(e)
@@ -245,7 +258,7 @@ class FileController {
             FileService.deleteFile(req, file)
             await file.remove()
             await user.save()
-            return res.json({message: 'File was deleted'})
+            return res.json({message: 'Файл был удален'})
         } catch (e) {
             console.log(e)
             return res.json({message: 'Delete file error'})
@@ -257,7 +270,12 @@ class FileController {
             const folderId = req.body.folderId
             const file = await FileSchema.findOne({_id: fileId, user: req.user._id}) as IFile
             const folder = await FileSchema.findOne({_id: folderId, user: req.user._id}) as IFile
-            const newPath = `${folder.path}/${file.name}`
+            let newPath = ''
+
+            folderId
+                ?newPath = `${folder.path}/${file.name}`
+                :newPath=`${folder.path}`
+            console.log(folderId)
             fs.rename(`${req.filePath}/${file.path}`, `${req.filePath}/${newPath}`,  ()=>{
                 console.log('File moved')
             })
@@ -284,7 +302,7 @@ class FileController {
 
             await FileService.removeDir(req, files, folder)
             await user.save()
-            return res.json({message: 'Folder was deleted'})
+            return res.json({message: 'Папка была удалена'})
         } catch (e) {
             console.log(e)
             return res.json({message: 'Delete folder error'})

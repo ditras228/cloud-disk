@@ -4,6 +4,7 @@ import {IFile} from '../../types/types'
 export const getFiles = (dirId: any, sort: string | null) => {
     return async (dispatch: any)  => {
         try {
+            dispatch(actions.app.showLoader())
             let url = '/files'
             if (dirId)
                 url = `/files?parent=${dirId}`
@@ -96,12 +97,47 @@ export function dropTo(file: IFile, folderId: string) {
                     headers: {Authorization: `Bearer ${localStorage.getItem('token')}`}
                 })
             dispatch(actions.file.deleteFileAction(file._id))
-            console.log(response)
+            dispatch(actions.app.addToast({title: file.name, action: response.data.message}))
         }catch(e){
             console.log(e)
     }
 
 }}
+export function shareFile(file: IFile) {
+    return async (dispatch: any) => {
+        try{
+            const response= await instance.post(`/files/shareFile`,
+                {
+                    fileId: file._id
+                },
+                {
+                    headers: {Authorization: `Bearer ${localStorage.getItem('token')}`}
+                })
+            dispatch(actions.file.setThisFile({...file, isShare: response.data}))
+
+        }catch(e){
+            console.log(e)
+        }
+
+    }}
+export function getFile(fileId: string) {
+    return async (dispatch: any) => {
+        try{
+            dispatch(actions.app.showLoader())
+            const response= await instance.get(`/files/file?id=${fileId}`,
+                {
+                    headers: {Authorization: `Bearer ${localStorage.getItem('token')}`}
+                })
+            dispatch(actions.file.setThisFile(response.data))
+
+        }catch(e){
+            console.log(e)
+        } finally {
+            dispatch(actions.app.hideLoader())
+        }
+
+
+    }}
 export  function downloadFile(file: any) {
     return async (dispatch: any) => {
         const response = await fetch(`${baseURL}/api/files/download?id=${file._id}`, {
@@ -135,7 +171,7 @@ export function deleteFile(file: any) {
                 })
             }
             dispatch(actions.file.deleteFileAction(file._id))
-            alert(response.data.message)
+            dispatch(actions.app.addToast({title: file.name, action: response.data.message}))
         } catch (e) {
             console.log(e)
         }

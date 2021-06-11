@@ -16,20 +16,18 @@ import {
 import CreateDirModal from '../modal/CreateDirModal'
 import {CloudUploadFill, FileEarmark, Folder, Grid3x3GapFill, List} from 'react-bootstrap-icons'
 import Uploader from './uploader/Uploader'
-import LoaderFC from '../loader/LoaderFC'
 import classes from './Disk.module.css'
 import {actions} from '../../redux/actions/actions'
 import NavFolder from './fileList/navFolder/navFolder'
-import ToastFC from '../toast/Toast'
 import ShareModal from '../modal/ShareModal'
 import {IFile} from '../../types/types'
+import ToastList from '../toast/Toast'
 
 const Disk = () => {
     const dispatch = useDispatch()
     const currentDir = useSelector(state => CurrentDir(state))
     const [show, setShow] = useState(false)
     const dirStack = useSelector(state => DirStack(state))
-    const loader = useSelector(state => Loader(state))
     const [sort, setSort] = useState('type')
     const [view, setView] = useState('list')
     const [dragEnter, setDragEnter] = useState(false)
@@ -49,7 +47,7 @@ const Disk = () => {
 
     useEffect(() => {
         dispatch(getFiles(currentDir?._id, sort))
-    }, [currentDir, sort])
+    }, [currentDir, sort, thisFile])
 
     useEffect(() => {
         const updateWindowDimensions = () => {
@@ -112,9 +110,6 @@ const Disk = () => {
         setDragEnter(false)
     }
 
-    if (loader) {
-        return <LoaderFC/>
-    }
     return (!dragEnter ?
             <div onDragEnter={e => byDrop ? dragEnterHandler(e) : () => {
             }}
@@ -124,8 +119,19 @@ const Disk = () => {
                  }}>
                 <Container style={{marginBottom: 20}}>
                     <div className={classes.tools}>
-                        <Button onClick={backClickHandler} disabled={backButton}>Назад</Button>
-                        <Button onClick={() => setShow(true)}>Создать папку</Button>
+                        <Button
+                            onClick={backClickHandler}
+                            disabled={backButton}
+                            variant={'outline-primary'}
+                        >
+                            Назад
+                        </Button>
+                        <Button
+                            onClick={() => setShow(true)}
+                            variant={'outline-success'}
+                        >
+                            Создать папку
+                        </Button>
                         <div className={classes.options}>
                             {!isMobile &&
                             <div className={classes.view}>
@@ -180,7 +186,13 @@ const Disk = () => {
                             />
                         </Form>
                         :
-                        <DropdownButton id="dropdown-basic-button" title="Загрузить" className={classes.uploadBtn}>
+                        <DropdownButton
+                            id="dropdown-basic-button"
+                            title="Загрузить"
+                            variant={'outline-primary'}
+                            className={classes.uploadBtn}
+                        >
+
                             <label htmlFor="file_input"
                             className={classes.dropdown_item}>
                                 <div>
@@ -217,7 +229,7 @@ const Disk = () => {
                     <Uploader/>
                     <ShareModal file={thisFile}/>
                 </Container>
-                <ToastFC/>
+                <ToastList/>
             </div>
             :
             <div className={classes.dropArea} onDrop={dropHandler} onDragEnter={dragEnterHandler}
@@ -230,7 +242,7 @@ const Disk = () => {
 const DropdownBtn: React.FC<IDropDownBtnProps> = ({setSort}) => {
     return (
         <Dropdown className={classes.dropdown}>
-            <Dropdown.Toggle variant="success" id="dropdown-basic">
+            <Dropdown.Toggle variant="outline-success" id="dropdown-basic">
                 Сортировка
             </Dropdown.Toggle>
 

@@ -7,15 +7,16 @@ import {IFile} from '../../../../types/types'
 import sizeFormat from '../../../utils/sizeFormat'
 import {actions} from '../../../../redux/actions/actions'
 import classes from './File.module.css'
+import {GetTarget} from '../../../../redux/selectors'
 
 export {}
-const FileFC: React.FC<FileProps> = ({file, view}) => {
+const FileFC: React.FC<FileProps> = ({file, view, loader}) => {
     const dispatch = useDispatch()
     const [fade, setFade] = useState(false)
-    const [over, setOver] = useState(null) as any
+    const target = useSelector(state =>GetTarget(state))
 
     function openDirHandler() {
-        if (file.type === 'dir') {
+        if (file.type === 'dir' && !loader) {
             dispatch(actions.file.pushToStack(file))
             dispatch(actions.file.setCurrentDir(file))
         }
@@ -90,12 +91,12 @@ const FileFC: React.FC<FileProps> = ({file, view}) => {
         e.preventDefault()
         e.stopPropagation()
         e.currentTarget.style.border='2px solid gray'
-        setOver(e.currentTarget)
+        dispatch(actions.file.setTarget(e.currentTarget))
     }
 
     function dragLeaveHandler(e: any) {
         e.currentTarget.style.border='2px solid transparent'
-        setOver(null)
+        dispatch(actions.file.setTarget(null))
     }
 
     function dragStartHandler(e: any) {
@@ -112,10 +113,10 @@ const FileFC: React.FC<FileProps> = ({file, view}) => {
 
     }
     function dropHandler(e: any) {
-        const fileId=over.getAttribute('fileId')
-        const fileType=over.getAttribute('fileType')
+        const fileId=target.getAttribute('fileId')
+        const fileType=target.getAttribute('fileType')
 
-        if(fileType==='dir' && over) {
+        if(fileType==='dir' && target) {
             e.currentTarget.style.border = '2px solid transparent'
             dispatch(actions.file.dropToFolder(fileId))
         }else{
@@ -147,8 +148,6 @@ const FileFC: React.FC<FileProps> = ({file, view}) => {
                     }
                 </Col>
 
-
-
                 <Col style={{display: 'flex', alignItems: 'center'}} sm={5}>{file.name}</Col>
                 <Col style={{display: 'flex', alignItems: 'center'}} sm={2}>{file.data.slice(0, 10)}</Col>
                 <Col style={{display: 'flex', alignItems: 'center'}} sm={2}> {sizeFormat(file.size)}</Col>
@@ -162,7 +161,10 @@ const FileFC: React.FC<FileProps> = ({file, view}) => {
                                     </Tooltip>
                                 }
                             >
-                            <Button onClick={e => deleteClickHandler(e)}>
+                            <Button 
+                                onClick={e => deleteClickHandler(e)}
+                                variant={'outline-danger'}
+                                >
                                 <TrashFill/>
                             </Button>
                             </OverlayTrigger>
@@ -175,23 +177,29 @@ const FileFC: React.FC<FileProps> = ({file, view}) => {
                                     </Tooltip>
                                 }
                             >
-                                <Button onClick={e => downloadClickHandler(e)}>
+                                <Button
+                                    onClick={e => downloadClickHandler(e)}
+                                    variant={'outline-success'}
+                                >
                                     <CloudDownloadFill/>
                                 </Button>
                             </OverlayTrigger>
-
                             <OverlayTrigger
                                 placement={'bottom'}
                                 overlay={
-                                    <Tooltip id={`tooltip-share`}>
+                                    <Tooltip id={`tooltip-download`}>
                                         Поделиться
                                     </Tooltip>
                                 }
                             >
-                                <Button onClick={e=> shareFile(e)}>
+                                <Button
+                                    onClick={e => shareFile(e)}
+                                    variant={file.isShare?'outline-primary':'outline-dark'}
+                                >
                                     <Link45deg/>
                                 </Button>
                             </OverlayTrigger>
+
                             </ButtonGroup>
                     </Col>
             </Row>
@@ -204,5 +212,6 @@ export default FileFC
 
 type FileProps = {
     file: IFile,
-    view: string
+    view: string,
+    loader: boolean
 }

@@ -7,11 +7,12 @@ router.post('/', authMiddleware, fileController.createDir)
 router.post('/upload', authMiddleware, fileController.uploadFile)
 router.post('/avatar', authMiddleware, fileController.uploadAvatar)
 router.post('/dropTo', authMiddleware, fileController.dropTo)
+router.post('/shareFile', authMiddleware, fileController.shareFile)
 
 router.get('/', authMiddleware, fileController.fetchFile)
 router.get('/download', authMiddleware, fileController.downloadFile)
 router.get('/search', authMiddleware, fileController.searchFile)
-router.get('/file', authMiddleware, fileController.shareFile)
+router.get('/file', authMiddleware, fileController.getFile)
 
 router.delete('/', authMiddleware, fileController.deleteFile)
 router.delete('/delFol', authMiddleware, fileController.deleteFolder)

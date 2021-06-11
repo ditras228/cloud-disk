@@ -2,15 +2,18 @@ import React from 'react'
 import {Alert, Card, Col, Row} from 'react-bootstrap'
 import File from './file/File'
 import {useSelector} from 'react-redux'
-import {Files} from '../../../redux/selectors'
+import {Files, Loader} from '../../../redux/selectors'
 import classes from './FileList.module.css'
 
 const FileList: React.FC<any> = ({view}) => {
+    const loader = useSelector(state => Loader(state))
 
-    const files = useSelector(state => Files(state)).map((file: any, index: number) =>
+    const files = useSelector(state => Files(state))
+        .map((file: any, index: number) =>
         <File key={index}
               file={file}
               view={view}
+              loader={loader}
         />
     )
 
