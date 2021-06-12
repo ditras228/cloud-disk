@@ -29,9 +29,9 @@ const Profile = () => {
                 <Card.Header>
                     Профиль
                 </Card.Header>
-                <Card.Body style={{padding: 50}}>
+                <Card.Body className={classes.card}>
                         <div className={classes.grid}>
-                                <label htmlFor="avatar_input">
+                                <label htmlFor="avatar_input" className={classes.label}>
                                     <div className={classes.container}>
                                         <img className={classes.image} src={avatar} alt=""/>
                                         <div className={classes.overlay}>
@@ -47,18 +47,18 @@ const Profile = () => {
                                     multiple={true} type="file" accept={'image/*'} onChange={fileUploadHandler}
                                     className={classes.input}
                                 />
-                        <Col className={classes.desc}>
-                                <Row className={classes.title}>
-                                    <Col><Mailbox/> Почта</Col>
-                                    {user.email}
-                                </Row>
-                                <Row className={classes.title}>
-                                    <Col>
-                                        <Disc/> Место на диске
-                                    </Col>
-                                     {sizeFormat(user.usedSpace)}
-                                     /{sizeFormat(user.diskSpace)}
-                                </Row>
+                        <Col>
+                                <div className={classes.row}>
+                                    <div className={classes.title}><Mailbox className={classes.i}/> Почта</div>
+                                    <div className={classes.desc}>{user.email}</div>
+                                </div>
+                                <div className={classes.row}>
+                                    <div  className={classes.title}>
+                                        <Disc className={classes.i}/> Место на диске
+                                    </div>
+                                    <div className={classes.desc}>{sizeFormat(user.usedSpace)}
+                                     /{sizeFormat(user.diskSpace)}</div>
+                                </div>
 
 
                             <OverlayTrigger

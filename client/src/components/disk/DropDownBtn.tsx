@@ -1,11 +1,26 @@
 import React from 'react'
-import {Dropdown} from 'react-bootstrap'
+import {Button, Dropdown} from 'react-bootstrap'
 import classes from './Disk.module.css'
-
+// @ts-ignore
+const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
+    <Button
+        className={classes.dropdown}
+        variant={'outline-success'}
+        href=""
+        // @ts-ignore
+        ref={ref}
+        onClick={(e) => {
+            e.preventDefault();
+            onClick(e);
+        }}
+    >
+        {children}
+    </Button>
+));
 export const DropdownBtn: React.FC<IDropDownBtnProps> = ({setSort}) => {
     return (
         <Dropdown>
-            <Dropdown.Toggle variant="outline-success" id="dropdown-basic"  className={classes.dropdown}>
+            <Dropdown.Toggle as={CustomToggle} variant="outline-success" id="dropdown-basic"  className={classes.dropdown}>
                 Сортировка
             </Dropdown.Toggle>
 

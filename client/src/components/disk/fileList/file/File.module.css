@@ -23,6 +23,11 @@
     background-color: whitesmoke;
     cursor: pointer;
 }
+@media(max-width: 600px){
+    .row{
+        flex-wrap: nowrap !important;
+    }
+}
 .dropdown_i{
     margin-right:10px
 }

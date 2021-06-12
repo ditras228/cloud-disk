@@ -97,6 +97,8 @@ export function dropTo(file: IFile, folderId: string) {
                     headers: {Authorization: `Bearer ${localStorage.getItem('token')}`}
                 })
             dispatch(actions.file.deleteFileAction(file._id))
+            dispatch(actions.file.unDropToFolder())
+
         }catch(e){
             console.log(e)
     }

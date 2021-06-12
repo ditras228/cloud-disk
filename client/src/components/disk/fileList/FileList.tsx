@@ -10,10 +10,10 @@ const FileList: React.FC<IListProps> = ({view, loader}) => {
     const files = useSelector(state => Files(state))
         .map((file: any, index: number) =>
         <File key={index}
+              index={index}
               file={file}
               view={view}
               loader={loader}
-              isNav={false}
         />
     )
 

@@ -10,6 +10,18 @@ import Profile from './components/profile/Profile'
 import Share from './components/share/Share'
 import {auth} from './redux/actions/user'
 
+
+import {polyfill} from "mobile-drag-drop";
+
+// optional import of scroll behaviour
+import {scrollBehaviourDragImageTranslateOverride} from "mobile-drag-drop/scroll-behaviour";
+
+// options are optional ;)
+polyfill({
+    // use this to make use of the scroll behaviour
+    dragImageTranslateOverride: scrollBehaviourDragImageTranslateOverride
+});
+
 function App() {
     const isAuth = useSelector(state => IsAuth(state))
     const dispatch = useDispatch()

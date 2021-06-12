@@ -43,15 +43,54 @@
     display: grid;
     grid-gap: 40px;
     grid-template-columns: auto 1fr;
+}
+.card{
+    padding: 50px !important;
+}
+@media(max-width: 805px){
+    .grid{
+        grid-template-columns: auto;
     }
-.title{
-    font-size: 22px;
+
+    .card{
+        padding:30px 10px 30px 10px  !important
+    }
+    .label{
+        margin: 0 auto;
+    }
+}
+.row{
     display: grid;
+    grid-template-columns: 2fr 3fr
+}
+@media(max-width: 530px) {
+    .row{
+        grid-template-columns: 1fr;
+        grid-template-rows: auto auto;
+    }
+    .desc{
+        text-align: left !important;
+    }
+    .title{
+        font-size: 18px !important;
+    }
+    .desc{
+        font-size: 18px !important;
+    }
+}
+.title{
+    font-size: 20px !important;
+    display: flex;
     grid-gap: 5px;
 }
+.i{
+    margin-top: 7px;
+    font-size: 20px;
+}
 .desc{
-    font-size: 23px;
+    font-size: 20px !important;
     display: grid;
     grid-template-rows: repeat(auto-fill, minmax(40px, 1fr));
+    text-align:right;
 
 }

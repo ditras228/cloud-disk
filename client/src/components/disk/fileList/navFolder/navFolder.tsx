@@ -15,8 +15,8 @@ const NavFolder: React.FC<any>  = () => {
                    <FileFC key={index}
                            loader={true}
                            file={dir}
-                           isNav={true}
-                           view={''}
+                           view={'navFolder'}
+                           index={index}
                    />)
             }
         </Breadcrumb>)
