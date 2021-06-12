@@ -97,7 +97,6 @@ export function dropTo(file: IFile, folderId: string) {
                     headers: {Authorization: `Bearer ${localStorage.getItem('token')}`}
                 })
             dispatch(actions.file.deleteFileAction(file._id))
-            dispatch(actions.app.addToast({title: file.name, action: response.data.message}))
         }catch(e){
             console.log(e)
     }

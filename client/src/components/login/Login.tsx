@@ -7,14 +7,14 @@ import * as Yup from 'yup';
 import {GetError} from '../../redux/selectors'
 const DisplayingErrorMessagesSchema = Yup.object().shape({
     password: Yup.string()
-        .min(3, 'Too Short!')
-        .max(12, 'Too Long!')
-        .required('Required'),
-    email: Yup.string().email('Invalid email').required('Required'),
+        .min(6, 'Должен быть больше 5 символов')
+        .max(12, 'Должен быть меньше 12 символов')
+        .required('Обязательно'),
+    email: Yup.string().email('Некорректный email').required('Обязательно'),
 });
 const Auth = () => {
     const dispatch = useDispatch()
-    const error = useSelector(state=>GetError(state))
+    const error = useSelector(state=>GetError(state, 'log'))
 
     const formik = useFormik({
         initialValues:{
@@ -60,7 +60,7 @@ const Auth = () => {
                             <Alert variant={'danger'}>{formik.errors.password}</Alert>
                         ) : null}
                         {error ? (
-                            <Alert variant={'danger'}>{error}</Alert>
+                            <Alert variant={'danger'}>{error.text}</Alert>
                         ) : null}
                         <Button size={"lg"} block variant="primary" type="submit">
                             Войти

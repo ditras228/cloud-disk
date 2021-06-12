@@ -3,6 +3,11 @@ import {Button, Form, Modal} from 'react-bootstrap'
 
  const CreateDirModal: React.FC<ICreateDirModalProps> = ({show, setShow, createDirHandler}) => {
     const [name, setName] = useState('')
+
+    const createDir = () =>{
+        createDirHandler(name)
+        setShow(false)
+    }
     return (
         <Modal show={show} onHide={() => setShow(false)}>
             <Modal.Header closeButton>
@@ -16,10 +21,10 @@ import {Button, Form, Modal} from 'react-bootstrap'
                 </Form>
             </Modal.Body>
             <Modal.Footer>
-                <Button variant="primary" onClick={() => {
-                    createDirHandler(name)
-                    setShow(false)
-                }}>
+                <Button variant="primary"
+                        onClick={()=>createDir()}
+                        disabled={!name}
+                >
                     ОК
                 </Button>
             </Modal.Footer>
@@ -28,6 +33,7 @@ import {Button, Form, Modal} from 'react-bootstrap'
 };
 
 export default CreateDirModal
+
 type ICreateDirModalProps = {
     show: boolean
     setShow: any

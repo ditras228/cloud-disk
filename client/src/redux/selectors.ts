@@ -29,8 +29,8 @@ export const GetIsMobile = (state: any)=>{
 export const GetUploadFilesByDrop = (state: any)=>{
     return state.uploader.UploadFilesByDrop
 }
-export const GetError = (state: any)=>{
-    return state.app.error
+export const GetError = (state: any, type: string)=>{
+    return state.app.errors.find((err: any)=>err.type===type)
 }
 export const GetHand = (state: any)=>{
     return state.file.hand
@@ -56,4 +56,3 @@ export const GetTarget = (state: any)=>{
 export const GetToasts = (state: any)=>{
     return state.app.toasts
 }
-

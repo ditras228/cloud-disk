@@ -14,7 +14,10 @@ export const registration =  (email: string, password: string) => {
             }
         } catch (e) {
             console.log(e)
-            dispatch(appReducerAction.error('Пользователь с таким email уже существует'))
+            dispatch(appReducerAction
+                .addError(
+                    {type: 'reg',
+                          text: 'Пользователь с таким email существует'}))
         }
     }
 }
@@ -29,7 +32,8 @@ export const login = (email: string, password: string) => {
             dispatch(userReducerAction.setUser(response.data))
         } catch (e) {
             console.log(e)
-            dispatch(appReducerAction.error('Неверный логин/пороль'))
+            dispatch(appReducerAction
+                .addError({type: 'log', text: 'Неверный логин/пороль'}))
         }
 
 

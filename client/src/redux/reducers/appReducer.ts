@@ -2,7 +2,7 @@ import {InferActionsTypes} from './index'
 
 const defaultState = {
     loader: true,
-    error: '',
+    errors: [],
     toasts: []
 }
 export default function appReducer(state = defaultState, action:appReducerActionType) {
@@ -11,8 +11,8 @@ export default function appReducer(state = defaultState, action:appReducerAction
             return {...state, loader: true}
         case 'HIDE_LOADER':
             return {...state, loader: false}
-        case 'ERRORS':
-            return {...state, error: action.payload}
+        case 'ADD_ERROR':
+            return {...state, errors: [...state.errors, action.payload]}
         case 'ADD_TOAST':
             return {...state, toasts:  [...state.toasts, action.payload]}
         case 'REMOVE_TOAST':
@@ -24,7 +24,7 @@ export default function appReducer(state = defaultState, action:appReducerAction
 export const appReducerAction = {
     showLoader: () => ({type: 'SHOW_LOADER'} as const),
     hideLoader: () => ({type: 'HIDE_LOADER'} as const),
-    error: (error:string) => ({type: 'ERRORS', payload: error} as const),
+    addError: (error:any) => ({type: 'ADD_ERROR', payload: error} as const),
     addToast: (toast:any) => ({type: 'ADD_TOAST', payload: toast} as const),
     removeToast: (toastId:any) => ({type: 'REMOVE_TOAST', payload: toastId} as const),
 }

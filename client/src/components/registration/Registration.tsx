@@ -9,17 +9,17 @@ import {useHistory} from 'react-router'
 
 const DisplayingErrorMessagesSchema = Yup.object().shape({
     password: Yup.string()
-        .min(3, 'Too Short!')
-        .max(12, 'Too Long!')
-        .required('Required'),
-    email: Yup.string().email('Invalid email').required('Required'),
+        .min(6, 'Должен быть больше 5 символов')
+        .max(12, 'Должен быть меньше 12 символов')
+        .required('Обязательно'),
+    email: Yup.string().email('Некорректный email').required('Обязательно'),
     passwordConfirmation: Yup.string()
-        .oneOf([Yup.ref('password'), null], 'Passwords must match')
+        .oneOf([Yup.ref('password'), null], 'Пороли не совпадают')
 
 })
 
 const Registration = () => {
-    const error = useSelector(state => GetError(state))
+    const error = useSelector(state => GetError(state, 'reg'))
     const dispatch = useDispatch()
     const isSuccess = useSelector(state => GetRegSuccess(state))
     const history = useHistory()
@@ -81,7 +81,7 @@ const Registration = () => {
                                     <Alert variant={'danger'}>{formik.errors.passwordConfirmation}</Alert>
                                 ) : null}
                                 {error ? (
-                                    <Alert variant={'danger'}>{error}</Alert>
+                                    <Alert variant={'danger'}>{error.text}</Alert>
                                 ) : null}
                                 <Button size={'lg'} block variant="primary" type="submit">
                                     Регистрация

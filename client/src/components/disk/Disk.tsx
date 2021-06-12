@@ -22,6 +22,8 @@ import NavFolder from './fileList/navFolder/navFolder'
 import ShareModal from '../modal/ShareModal'
 import {IFile} from '../../types/types'
 import ToastList from '../toast/Toast'
+import {DropdownBtn} from './DropDownBtn'
+import Footer from '../footer/Footer'
 
 const Disk = () => {
     const dispatch = useDispatch()
@@ -39,6 +41,7 @@ const Disk = () => {
     const dropToFolder = useSelector(state => GetDropTo(state)) as string
     const hand = useSelector(state => GetHand(state)) as IFile
     const thisFile = useSelector(state => GetThisFile(state)) as IFile
+    const loader = useSelector(state => Loader(state))
 
     useEffect(() => {
         if (hand && dropToFolder && byDrop)
@@ -78,9 +81,7 @@ const Disk = () => {
     }
 
     function backClickHandler() {
-        const backDirId = dirStack.pop()
-        dispatch(actions.file.setCurrentDir(backDirId._id))
-
+        dispatch(actions.file.removeFromStack())
     }
 
     function fileUploadHandler(event: { target: { files: any } }) {
@@ -121,7 +122,7 @@ const Disk = () => {
                     <div className={classes.tools}>
                         <Button
                             onClick={backClickHandler}
-                            disabled={backButton}
+                            disabled={backButton && !loader}
                             variant={'outline-primary'}
                         >
                             Назад
@@ -225,11 +226,11 @@ const Disk = () => {
                     />
                     <CreateDirModal show={show} setShow={setShow} createDirHandler={createDirHandler}/>
                     <NavFolder/>
-                    <FileList view={view} setView={setView}/>
+                    <FileList view={view} loader={loader}/>
                     <Uploader/>
                     <ShareModal file={thisFile}/>
                 </Container>
-                <ToastList/>
+                <Footer/>
             </div>
             :
             <div className={classes.dropArea} onDrop={dropHandler} onDragEnter={dragEnterHandler}
@@ -239,23 +240,4 @@ const Disk = () => {
     )
 
 }
-const DropdownBtn: React.FC<IDropDownBtnProps> = ({setSort}) => {
-    return (
-        <Dropdown className={classes.dropdown}>
-            <Dropdown.Toggle variant="outline-success" id="dropdown-basic">
-                Сортировка
-            </Dropdown.Toggle>
-
-            <Dropdown.Menu>
-                <Dropdown.Item onSelect={() => setSort('name')}>По имени</Dropdown.Item>
-                <Dropdown.Item onSelect={() => setSort('type')}>По типу</Dropdown.Item>
-                <Dropdown.Item onSelect={() => setSort('date')}>По дате</Dropdown.Item>
-            </Dropdown.Menu>
-        </Dropdown>
-    )
-}
 export default Disk
-
-type IDropDownBtnProps = {
-    setSort: any
-}

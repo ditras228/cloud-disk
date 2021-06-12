@@ -5,8 +5,7 @@ import {useSelector} from 'react-redux'
 import {Files, Loader} from '../../../redux/selectors'
 import classes from './FileList.module.css'
 
-const FileList: React.FC<any> = ({view}) => {
-    const loader = useSelector(state => Loader(state))
+const FileList: React.FC<IListProps> = ({view, loader}) => {
 
     const files = useSelector(state => Files(state))
         .map((file: any, index: number) =>
@@ -14,6 +13,7 @@ const FileList: React.FC<any> = ({view}) => {
               file={file}
               view={view}
               loader={loader}
+              isNav={false}
         />
     )
 
@@ -46,3 +46,8 @@ const FileList: React.FC<any> = ({view}) => {
     )
 }
 export default FileList
+
+type IListProps ={
+    view: string,
+    loader: boolean
+}

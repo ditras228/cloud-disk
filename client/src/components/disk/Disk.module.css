@@ -25,7 +25,7 @@
     grid-template-columns: repeat(2, 48px);
 }
 .dropdown{
-    display: inline-block;
+    height: 100%
 }
 .dropdown_item{
     display: block;
