@@ -208,10 +208,7 @@ class FileController {
             const file = await FileSchema.findOne({_id: req.query.id}) as IFile
             if(file.user == req.user._id || file.isShare==true){
 
-                if (file.parent)
-                    path = `${req.filePath}/${req.user._id}/${file.path}/${file.name}`
-                else
-                    path = `${req.filePath}/${req.user._id}/${file.name}`
+                    path = `${req.filePath}/${file.path}`
 
                 if (fs.existsSync(path)) {
                     if (file.type !== 'dir') {
@@ -269,18 +266,24 @@ class FileController {
             const fileId = req.body.fileId
             const folderId = req.body.folderId
             const file = await FileSchema.findOne({_id: fileId, user: req.user._id}) as IFile
-            const folder = await FileSchema.findOne({_id: folderId, user: req.user._id}) as IFile
+            let folder
             let newPath = ''
 
-            folderId
-                ?newPath = `${folder.path}/${file.name}`
-                :newPath=`${folder.path}`
-            console.log(folderId)
+            if(folderId !=='0')
+            {
+                folder = await FileSchema.findOne({_id: folderId, user: req.user._id}) as IFile
+                folderId
+                    ?newPath = `${folder.path}/${file.name}`
+                    :newPath=`${req.user._id}/${folder.path}/${file.name}`
+            }else{
+                newPath=`${req.user._id}/${file.name}`
+        }
+
             fs.rename(`${req.filePath}/${file.path}`, `${req.filePath}/${newPath}`,  ()=>{
                 console.log('File moved')
             })
-            file.path = newPath
-            file.parent = folder._id
+            file.path =  newPath
+            file.parent = folder?._id
             await file.save()
             return res.json({message: file})
         }catch(e){

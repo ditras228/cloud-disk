@@ -1,15 +1,18 @@
 import React from 'react'
 import {Breadcrumb} from 'react-bootstrap'
-import {actions} from '../../../../redux/actions/actions'
-import {useDispatch} from 'react-redux'
+import classes from './File.module.css'
 
 const BreadCrumbFile: React.FC<any> = ({props, file}) => {
-    const dispatch = useDispatch()
 
     return (
         <Breadcrumb.Item
             onClick={() => props.openNavDirHandler()}
+            draggable={false}
             onDragOver={(e:any)=>props.dragOverHandler(e) }
+            onDragLeave={(e:any)=>props.dragLeaveHandler(e) }
+            onDrop={(e:any)=>props.dropHandler(e) }
+            onDragEnd={(e:any)=>props.dragEndHandler(e) }
+            className={classes.item}
             fileId={file._id}
             fileType={file.type}
         >

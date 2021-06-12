@@ -81,7 +81,7 @@ const Disk = () => {
     }
 
     function backClickHandler() {
-        dispatch(actions.file.removeFromStack(1))
+        dispatch(actions.file.popStack())
     }
 
     function fileUploadHandler(event: { target: { files: any } }) {

@@ -16,7 +16,7 @@ const router =new  Router()
 router.post('/registration',
     [
         check('email').isEmail().withMessage({message: 'Incorrect email'}),
-        check('password').isLength({min: 3, max: 12})
+        check('password').isLength({min: 6, max: 12})
             .withMessage({message: 'Password must be longer 3 and shorted than 12'})
     ],
     async (req: Request & IReq, res: Response &IRes) => {

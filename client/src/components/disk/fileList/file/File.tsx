@@ -81,7 +81,7 @@ const FileFC: React.FC<FileProps> = ({file, view, loader,index}) => {
             const fileId = target.getAttribute('fileId')
             const fileType = target.getAttribute('fileType')
 
-            if (fileType === 'dir' && target) {
+            if (fileType === 'dir' && target || index ===0) {
                 e.currentTarget.style.border = '2px solid transparent'
                 dispatch(actions.file.dropToFolder(fileId))
             } else {

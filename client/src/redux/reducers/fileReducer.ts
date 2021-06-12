@@ -28,8 +28,12 @@ export default function fileReducer(state = defaultState, action:fileReducerActi
             return {...state, dirStack: [...state.dirStack, action.payload]}
         case 'REMOVE_FROM_STACK':
             return {...state, dirStack: [...state.dirStack.filter((file, index)=>
-                                        index!=state.dirStack.length-action.payload || index===0)],
-                              currentDir: state.dirStack[state.dirStack.length-action.payload-1]}
+                                        index<= action.payload || index==0 ) ],
+                              currentDir: state.dirStack[action.payload]}
+        case 'POP_STACK':
+            return {...state, dirStack: [...state.dirStack.filter((file, index)=>
+                    index!=state.dirStack.length-1 || index===0)],
+                currentDir: state.dirStack[state.dirStack.length-2]}
         case 'DELETE_FILE':
             return {...state, files: [...state.files.filter(file => file._id !== action.payload)]}
         case 'SET_HAND':
@@ -53,6 +57,7 @@ export const fileReducerAction = {
     setCurrentDir: (dir: IFile) => ({type: 'SET_CURRENT_DIR', payload: dir} as const),
     addFile: (file: IFile) => ({type: 'ADD_FILE', payload: file} as const),
     pushToStack: (dir: IFile) => ({type: 'PUSH_TO_STACK', payload: dir} as const),
+    popStack: () => ({type: 'POP_STACK'} as const),
     removeFromStack: (num: number) => ({type: 'REMOVE_FROM_STACK', payload: num} as const),
     deleteFileAction: (dirId: string) => ({type: 'DELETE_FILE', payload: dirId} as const),
     setHand: (file: any) => ({type: 'SET_HAND', payload: file} as const),
