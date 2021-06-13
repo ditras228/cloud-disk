@@ -1,3 +1,4 @@
+export{}
 const Router = require('express')
 const router = Router()
 const fileController=require('../controllers/fileController.ts')

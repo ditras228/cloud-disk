@@ -3,24 +3,24 @@ import {userReducerAction} from '../reducers/userReducer'
 import {appReducerAction} from '../reducers/appReducer'
 import {actions} from './actions'
 
-export const registration =  (email: string, password: string) => {
-    return async (dispatch: any)  => {
-        try {
-            const response = await instance.post('auth/registration/', {
-                email,
-                password
-            })
-            if(response.status==200){
-                (dispatch(userReducerAction.setRegistration()))
+export const registration = (email: string, password: string) => {
+    return async (dispatch: any) => {
+        await instance.post('auth/registration/', {
+            email,
+            password
+        }).then(response =>
+            dispatch(userReducerAction.setRegistration())
+        ).catch(e => {
+                dispatch(appReducerAction
+                    .addError(
+                        {
+                            type: 'reg',
+                            text: e.response.data.message
+                        }))
             }
-        } catch (e) {
-            console.log(e)
-            dispatch(appReducerAction
-                .addError(
-                    {type: 'reg',
-                          text: 'Пользователь с таким email существует'}))
-        }
+        )
     }
+
 }
 export const submitUser = (hash: string) => {
     return async (dispatch: any) => {
@@ -31,7 +31,7 @@ export const submitUser = (hash: string) => {
             dispatch(userReducerAction.setUser(response.data))
         } catch (e) {
             console.log(e)
-        }finally {
+        } finally {
             dispatch(actions.app.hideLoader())
         }
 
@@ -41,42 +41,33 @@ export const submitUser = (hash: string) => {
 }
 export const login = (email: string, password: string) => {
     return async (dispatch: any) => {
-        try {
-            const response = await instance.post('auth/login', {
-                email,
-                password
-            })
+        await instance.post('auth/login', {
+            email,
+            password
+        }).then(response => {
             localStorage.setItem('token', response.data.token)
             dispatch(userReducerAction.setUser(response.data))
-        } catch (e) {
-            console.log(e)
-            dispatch(appReducerAction
-                .addError({type: 'log', text: 'Неверный логин/пороль'}))
-        }
-
-
+        }).catch(e => {
+                dispatch(appReducerAction
+                    .addError({type: 'log', text: e.response.data.message}))
+            }
+        )
     }
 
 }
 export const auth = () => {
     return async (dispatch: any) => {
-        try {
-            const response = await instance.get('auth/auth',
-                {headers: {Authorization: `Bearer ${localStorage.getItem('token')}`}})
-
-            if(response.status===200){
+        await instance.get('auth/auth',
+            {headers: {Authorization: `Bearer ${localStorage.getItem('token')}`}})
+            .then(response => {
                 dispatch(userReducerAction.setUser(response.data))
                 localStorage.setItem('token', response.data.token)
-            }else{
+            })
+            .catch(e => {
+                console.log(e)
                 localStorage.removeItem('token')
-            }
-
-        } catch (e) {
-            console.log(e)
-            localStorage.removeItem('token')
-        }
+            })
     }
-
 }
 export const uploadAvatar = (file: any) => {
     return async (dispatch: any) => {
@@ -108,7 +99,6 @@ export const deleteAvatar = () => {
 export const SetMobile = () => {
     return async (dispatch: any) => {
         try {
-
             dispatch(userReducerAction.setMobile(true))
         } catch (e) {
             console.log(e)

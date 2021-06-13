@@ -43,7 +43,9 @@ const Auth = () => {
                                 value={formik.values.email}
                                 onChange={formik.handleChange}
                                 type="email"
-                                placeholder="Email"/>
+                                placeholder="Email"
+                            />
+
                         </Form.Group>
                         {formik.errors.email && formik.touched.email ? (
                             <Alert variant={'danger'}>{formik.errors.email}</Alert>
@@ -54,7 +56,9 @@ const Auth = () => {
                                 value={formik.values.password}
                                 onChange={formik.handleChange}
                                 type="password"
-                                placeholder="Пороль"/>
+                                placeholder="Пороль"
+                                autoComplete={'off'}
+                            />
                         </Form.Group>
                         {formik.errors.password && formik.touched.password ? (
                             <Alert variant={'danger'}>{formik.errors.password}</Alert>

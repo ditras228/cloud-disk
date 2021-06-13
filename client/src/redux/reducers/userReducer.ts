@@ -18,7 +18,6 @@ export default function userReducer(state = defaultState, action: userReducerAct
             return {
                 ...state,
                 currentUser: {...state.currentUser, avatar: action.payload.avatar},
-                isAuth: true
             }
         case 'SET_MOBILE':
             return {

@@ -16,7 +16,11 @@ import {Button, Form, Modal} from 'react-bootstrap'
             <Modal.Body>
                 <Form>
                     <Form.Group controlId="formBasicEmail">
-                        <Form.Control onChange={e => setName(e.target.value)}  placeholder="Введите название папки"/>
+                        <Form.Control
+                            onChange={e => setName(e.target.value)}
+                            placeholder="Введите название папки"
+                            autoComplete={'off'}
+                        />
                     </Form.Group>
                 </Form>
             </Modal.Body>

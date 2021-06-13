@@ -1,26 +1,28 @@
 import React from 'react'
-import {Button, Card, Col, Container, OverlayTrigger, ProgressBar, Row, Tooltip} from 'react-bootstrap'
-import {Disc, Mailbox, TrashFill, Upload} from 'react-bootstrap-icons'
+import {Card, Col, Container, OverlayTrigger, ProgressBar, Tooltip} from 'react-bootstrap'
+import {Disc, Mailbox} from 'react-bootstrap-icons'
 import {useDispatch, useSelector} from 'react-redux'
 import {uploadAvatar} from '../../redux/actions/user'
 import {GetUser} from '../../redux/selectors'
 import {baseURL} from '../api/api'
 import sizeFormat from '../utils/sizeFormat'
 import classes from './Profile.module.css'
+import Avatar from './Avatar'
 
 const Profile = () => {
     const dispatch = useDispatch()
     const user = useSelector(state => GetUser(state)).currentUser
-    const diskPercent =  user.usedSpace/user.diskSpace*100
+    const diskPercent = user.usedSpace / user.diskSpace * 100
 
-    let avatar= `${baseURL}/${user.avatar}`
+    let avatar = `${baseURL}/${user.avatar}`
 
-    function fileUploadHandler(e: any){
+    function fileUploadHandler(e: any) {
         const file = e.target.files[0]
         dispatch(uploadAvatar(file))
     }
-    if(avatar === `${baseURL}/undefined` ){
-        avatar= 'http://placehold.it/300'
+
+    if (avatar === `${baseURL}/undefined`) {
+        avatar = 'http://placehold.it/300'
     }
 
     return (
@@ -30,35 +32,21 @@ const Profile = () => {
                     Профиль
                 </Card.Header>
                 <Card.Body className={classes.card}>
-                        <div className={classes.grid}>
-                                <label htmlFor="avatar_input" className={classes.label}>
-                                    <div className={classes.container}>
-                                        <img className={classes.image} src={avatar} alt=""/>
-                                        <div className={classes.overlay}>
-                                            <Upload className={classes.text}/>
-                                        </div>
-                                    </div>
+                    <div className={classes.grid}>
+                        <Avatar avatar={avatar} fileUploadHandler={fileUploadHandler}/>
 
-                                </label>
-
-                                <input
-                                    id="avatar_input"
-                                    lang="ru"
-                                    multiple={true} type="file" accept={'image/*'} onChange={fileUploadHandler}
-                                    className={classes.input}
-                                />
                         <Col>
-                                <div className={classes.row}>
-                                    <div className={classes.title}><Mailbox className={classes.i}/> Почта</div>
-                                    <div className={classes.desc}>{user.email}</div>
+                            <div className={classes.row}>
+                                <div className={classes.title}><Mailbox className={classes.i}/> Почта</div>
+                                <div className={classes.desc}>{user.email}</div>
+                            </div>
+                            <div className={classes.row}>
+                                <div className={classes.title}>
+                                    <Disc className={classes.i}/> Место на диске
                                 </div>
-                                <div className={classes.row}>
-                                    <div  className={classes.title}>
-                                        <Disc className={classes.i}/> Место на диске
-                                    </div>
-                                    <div className={classes.desc}>{sizeFormat(user.usedSpace)}
-                                     /{sizeFormat(user.diskSpace)}</div>
-                                </div>
+                                <div className={classes.desc}>{sizeFormat(user.usedSpace)}
+                                    /{sizeFormat(user.diskSpace)}</div>
+                            </div>
 
 
                             <OverlayTrigger
@@ -69,10 +57,10 @@ const Profile = () => {
                                     </Tooltip>
                                 }
                             >
-                                <ProgressBar  striped variant="success" now={diskPercent} />
+                                <ProgressBar striped variant="success" now={diskPercent}/>
                             </OverlayTrigger>
                         </Col>
-                        </div>
+                    </div>
                 </Card.Body>
             </Card>
         </Container>

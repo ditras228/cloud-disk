@@ -5,7 +5,6 @@ import {useFormik} from 'formik'
 import * as Yup from 'yup'
 import {useDispatch, useSelector} from 'react-redux'
 import {GetError, GetRegSuccess} from '../../redux/selectors'
-import {useHistory} from 'react-router'
 
 const DisplayingErrorMessagesSchema = Yup.object().shape({
     password: Yup.string()
@@ -52,7 +51,8 @@ const Registration = () => {
                                         value={formik.values.email}
                                         onChange={formik.handleChange}
                                         type="email"
-                                        placeholder="Email"/>
+                                        placeholder="Email"
+                                    />
                                 </Form.Group>
                                 {formik.errors.email && formik.touched.email ? (
                                     <Alert variant={'danger'}>{formik.errors.email}</Alert>
@@ -63,7 +63,9 @@ const Registration = () => {
                                         value={formik.values.password}
                                         onChange={formik.handleChange}
                                         type="password"
-                                        placeholder="Пороль"/>
+                                        placeholder="Пороль"
+                                        autoComplete={'off'}
+                                    />
                                 </Form.Group>
                                 {formik.errors.password && formik.touched.password ? (
                                     <Alert variant={'danger'}>{formik.errors.password}</Alert>
@@ -74,7 +76,8 @@ const Registration = () => {
                                         value={formik.values.passwordConfirmation}
                                         onChange={formik.handleChange}
                                         type="password"
-                                        placeholder="Повторите пороль"/>
+                                        placeholder="Повторите пороль"
+                                        autoComplete={'off'}/>
                                 </Form.Group>
                                 {formik.errors.passwordConfirmation && formik.touched.passwordConfirmation ? (
                                     <Alert variant={'danger'}>{formik.errors.passwordConfirmation}</Alert>
