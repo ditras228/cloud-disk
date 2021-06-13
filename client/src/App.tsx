@@ -9,16 +9,11 @@ import {IsAuth} from './redux/selectors'
 import Profile from './components/profile/Profile'
 import Share from './components/share/Share'
 import {auth} from './redux/actions/user'
-
-
 import {polyfill} from "mobile-drag-drop";
-
-// optional import of scroll behaviour
+import RegConfirm from './components/registration/RegConfirm'
 import {scrollBehaviourDragImageTranslateOverride} from "mobile-drag-drop/scroll-behaviour";
 
-// options are optional ;)
 polyfill({
-    // use this to make use of the scroll behaviour
     dragImageTranslateOverride: scrollBehaviourDragImageTranslateOverride
 });
 
@@ -36,6 +31,7 @@ function App() {
             <Switch>
                 <Route path={'/registration'} component={Registration}/>
                 <Route path={'/login'} component={Auth}/>
+                <Route path={'/regconfirm'} component={RegConfirm}/>
                 <Redirect to={'/login'}/>
             </Switch>
                 :

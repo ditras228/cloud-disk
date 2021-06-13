@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react'
+import React from 'react'
 import {Alert, Button, Card, Container, Form} from 'react-bootstrap'
 import {registration} from '../../redux/actions/user'
 import {useFormik} from 'formik'
@@ -22,7 +22,6 @@ const Registration = () => {
     const error = useSelector(state => GetError(state, 'reg'))
     const dispatch = useDispatch()
     const isSuccess = useSelector(state => GetRegSuccess(state))
-    const history = useHistory()
 
     const formik = useFormik({
             initialValues: {
@@ -94,12 +93,7 @@ const Registration = () => {
                 )
                 : (
                     <div  style={{display: 'block', textAlign: 'center', width: '100%'}}>
-                        <h2 style={{paddingBottom: 10}}>РЕГИСТРАЦИЯ ЗАВЕРШЕНА</h2>
-                        <Button 
-                            variant={'outline-success'} 
-                            size={'lg'}
-                            onClick={()=>history.push('/login')}
-                        >ВОЙТИ</Button>
+                        <h2 style={{paddingBottom: 10}}>Проверьте почту, чтобы завершить регистрацию</h2>
                     </div>
             )
             }

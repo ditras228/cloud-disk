@@ -1,6 +1,7 @@
 import {instance} from '../../components/api/api'
 import {userReducerAction} from '../reducers/userReducer'
 import {appReducerAction} from '../reducers/appReducer'
+import {actions} from './actions'
 
 export const registration =  (email: string, password: string) => {
     return async (dispatch: any)  => {
@@ -20,6 +21,23 @@ export const registration =  (email: string, password: string) => {
                           text: 'Пользователь с таким email существует'}))
         }
     }
+}
+export const submitUser = (hash: string) => {
+    return async (dispatch: any) => {
+        try {
+            dispatch(actions.app.showLoader())
+            const response = await instance.get(`auth/submit?${hash}`)
+            localStorage.setItem('token', response.data.token)
+            dispatch(userReducerAction.setUser(response.data))
+        } catch (e) {
+            console.log(e)
+        }finally {
+            dispatch(actions.app.hideLoader())
+        }
+
+
+    }
+
 }
 export const login = (email: string, password: string) => {
     return async (dispatch: any) => {

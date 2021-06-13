@@ -22,6 +22,7 @@ export interface IReq {
         parent: string
         id: number
         search: string
+        hash: string
     }
     files: any
 }

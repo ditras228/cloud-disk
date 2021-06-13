@@ -9,6 +9,8 @@ const UserSchema = new Schema({
     usedSpace: {type: Number, default: 0},
     avatar: {type: String},
     files: [{type:  Schema.Types.ObjectId, ref: 'File'}],
+    active:{type:  Schema.Types.Boolean, required: true},
+    hash: {type:  String},
 })
 module.exports= mongoose.model('UserSchema', UserSchema);
 
@@ -20,4 +22,6 @@ export interface IUser  extends mongoose.Document {
     usedSpace:  number
     avatar: string
     files: IFile['_id']
+    hash: string
+    active: boolean
 }
