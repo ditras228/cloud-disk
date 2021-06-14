@@ -12,7 +12,7 @@ export default function uploadReducer(state = defaultState, action: UploadReduce
         case 'SHOW_UPLOADER':
             return {...state, isVisible: true}
         case 'HIDE_UPLOADER':
-            return {...state, isVisible: false}
+            return {...state, isVisible: false, files: []}
         case 'ADD_UPLOAD_FILES':
             return {...state, files: [...state.files, action.payload]}
         case 'REMOVE_UPLOAD_FILES':

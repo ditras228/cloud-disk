@@ -1,5 +1,5 @@
 import 'react-toggle/style.css'
-import React, {useEffect} from 'react'
+import React from 'react'
 import {Button, Modal} from 'react-bootstrap'
 import {IFile} from '../../types/types'
 import {GetIsShare, GetThisFile} from '../../redux/selectors'

@@ -1,12 +1,13 @@
-import React, {useState} from 'react'
+import React from 'react'
 import {Fade} from 'react-bootstrap'
 import classes from './File.module.css'
 import {FileEarmark, Folder} from 'react-bootstrap-icons'
 import {useDispatch} from 'react-redux'
 import {actions} from '../../../../redux/actions/actions'
+import {IFileFC} from '../../../../types/types'
 
 
-const GridFile: React.FC<any> = ({props, file, fade}) => {
+const GridFile: React.FC<IFileFC> = ({props, file, fade}) => {
     const dispatch = useDispatch()
 
     const clickHandler=(e: any)=>{

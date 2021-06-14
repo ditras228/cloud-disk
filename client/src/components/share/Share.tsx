@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react'
+import React, {useEffect} from 'react'
 import {Button, Card, Container} from 'react-bootstrap'
 import classes from './Share.module.css'
 import {CloudDownloadFill, FileEarmark, Folder} from 'react-bootstrap-icons'
@@ -9,6 +9,7 @@ import {GetThisFile, Loader} from '../../redux/selectors'
 import {downloadFile, getFile} from '../../redux/actions/file'
 import LoaderFC from '../loader/LoaderFC'
 import {useHistory} from 'react-router'
+
 const queryString = require('query-string');
 
 const Share = () => {

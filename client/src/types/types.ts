@@ -10,3 +10,9 @@ export interface IFile {
     childs: string
     isShare: boolean
 }
+export interface IFileFC{
+    props:any
+    file: IFile
+    fade: boolean
+    index?: string
+}

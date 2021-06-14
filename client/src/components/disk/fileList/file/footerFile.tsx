@@ -2,8 +2,9 @@ import React from 'react'
 import {Button, ButtonGroup, Col, Container, Fade, Row} from 'react-bootstrap'
 import classes from './File.module.css'
 import {CloudDownloadFill, FileEarmark, Folder, Link45deg, TrashFill} from 'react-bootstrap-icons'
+import {IFile} from '../../../../types/types'
 
-const FooterFile: React.FC<any> = ({props, file, fade}) => {
+const FooterFile: React.FC<FooterFileProps> = ({props, file, fade}) => {
     return (
         <Fade in={fade}>
             <Container
@@ -16,7 +17,7 @@ const FooterFile: React.FC<any> = ({props, file, fade}) => {
                             file.type === 'dir' ? <Folder/> : <FileEarmark/>
                         }
                     </Col>
-                    <Col style={{display: 'flex', alignItems: 'center'}} sm={6}>{file.name}</Col>
+                    <Col style={{display: 'flex', alignItems: 'center'}} sm={9}>{file.name}</Col>
                     <Col sm={2} className={classes.buttons} >
                         <ButtonGroup >
                                 <Button
@@ -46,3 +47,9 @@ const FooterFile: React.FC<any> = ({props, file, fade}) => {
 }
 
 export default FooterFile
+
+type FooterFileProps={
+    props: any
+    file: IFile
+    fade: boolean
+}

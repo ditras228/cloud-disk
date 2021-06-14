@@ -4,9 +4,9 @@ import {GetThisFile} from '../../redux/selectors'
 import FileFC from '../disk/fileList/file/File'
 import classes from './Footer.module.css'
 
-const Footer = () => {
+const Footer: React.FC<FooterProps>= ({view}) => {
     const hand = useSelector(state=> GetThisFile(state))
-    if(!hand){
+    if(!hand || view==='list'){
         return <></>
     }
     return (
@@ -17,3 +17,7 @@ const Footer = () => {
 }
 
 export default Footer
+
+type FooterProps={
+    view: string
+}

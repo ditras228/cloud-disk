@@ -1,5 +1,5 @@
-import React, {useEffect, useState} from 'react'
-import {Col, Fade, Row, Toast} from 'react-bootstrap'
+import React, {useState} from 'react'
+import {Row, Toast} from 'react-bootstrap'
 import {GetToasts} from '../../redux/selectors'
 import {useDispatch, useSelector} from 'react-redux'
 import {actions} from '../../redux/actions/actions'

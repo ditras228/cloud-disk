@@ -2,7 +2,7 @@ import React from 'react'
 import {Alert, Card, Col, Row} from 'react-bootstrap'
 import File from './file/File'
 import {useSelector} from 'react-redux'
-import {Files, Loader} from '../../../redux/selectors'
+import {Files} from '../../../redux/selectors'
 import classes from './FileList.module.css'
 
 const FileList: React.FC<IListProps> = ({view, loader}) => {

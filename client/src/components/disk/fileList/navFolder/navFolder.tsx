@@ -5,7 +5,7 @@ import {useSelector} from 'react-redux'
 import {GetDirStack} from '../../../../redux/selectors'
 import FileFC from '../file/File'
 
-const NavFolder: React.FC<any>  = () => {
+const NavFolder  = () => {
     const dirs = useSelector(state => GetDirStack(state)) as Array<IFile>
 
     return (

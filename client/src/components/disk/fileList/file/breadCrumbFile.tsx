@@ -1,8 +1,9 @@
 import React from 'react'
 import {Breadcrumb} from 'react-bootstrap'
 import classes from './File.module.css'
+import {IFileFC} from '../../../../types/types'
 
-const BreadCrumbFile: React.FC<any> = ({props, file}) => {
+const BreadCrumbFile: React.FC<IFileFC> = ({props, file}) => {
 
     return (
         <Breadcrumb.Item
@@ -22,3 +23,4 @@ const BreadCrumbFile: React.FC<any> = ({props, file}) => {
 }
 
 export default BreadCrumbFile
+

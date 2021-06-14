@@ -5,8 +5,9 @@ import classes from './File.module.css'
 import {CloudDownloadFill, FileEarmark, Folder, Link45deg, TrashFill} from 'react-bootstrap-icons'
 import sizeFormat from '../../../utils/sizeFormat'
 import {useDispatch} from 'react-redux'
+import {IFileFC} from '../../../../types/types'
 
-const ListFile: React.FC<any> = ({props, file, fade}) => {
+const ListFile: React.FC<IFileFC> = ({props, file, fade}) => {
     const dispatch = useDispatch()
     return (
         <Fade in={fade}>

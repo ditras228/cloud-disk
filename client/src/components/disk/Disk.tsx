@@ -74,12 +74,12 @@ const Disk = () => {
     }, [window.innerWidth])
 
     function createDirHandler(name: string) {
-         if(currentDir?._id!=='0')
-         dispatch(createDir(null, name))
-        else{
-             dispatch(createDir(currentDir?._id, name))
+        if (currentDir?._id !== '0')
+            dispatch(createDir(null, name))
+        else {
+            dispatch(createDir(currentDir?._id, name))
 
-         }
+        }
 
     }
 
@@ -127,7 +127,7 @@ const Disk = () => {
                     <RegSuccess/>
                     <ShareModal file={thisFile}/>
                 </Container>
-                <Footer/>
+                <Footer view={view}/>
             </div>
             :
             <div className={classes.dropArea} onDrop={dropHandler} onDragEnter={dragEnterHandler}

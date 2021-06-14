@@ -1,10 +1,10 @@
 import React, {useState} from 'react'
 import {Button, Form, FormControl, InputGroup, Navbar, OverlayTrigger, Tooltip} from 'react-bootstrap'
-import {useHistory} from "react-router";
-import {useDispatch, useSelector} from "react-redux";
-import {getFiles, searchFiles} from "../../redux/actions/file";
-import {appReducerAction} from "../../redux/reducers/appReducer";
-import {Disc, List, Search} from 'react-bootstrap-icons'
+import {useHistory} from 'react-router'
+import {useDispatch, useSelector} from 'react-redux'
+import {getFiles, searchFiles} from '../../redux/actions/file'
+import {appReducerAction} from '../../redux/reducers/appReducer'
+import {Disc, Search} from 'react-bootstrap-icons'
 import {CurrentDir, IsAuth} from '../../redux/selectors'
 import {userReducerAction} from '../../redux/reducers/userReducer'
 import classes from './NavBar.module.css'
