@@ -6,5 +6,6 @@ declare module 'react' {
         webkitdirectory?: string;
         fileId?: string;
         fileType?: string;
+        htmlFor?: string
     }
 }

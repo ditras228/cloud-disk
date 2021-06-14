@@ -8,7 +8,7 @@ const authController = require('../controllers/authController.ts')
 router.post('/registration',
     [
         check('email').isEmail().withMessage({message: 'Incorrect email'}),
-        check('password').isLength({min: 6, max: 12})
+        check('password').  isLength({min: 6, max: 12})
             .withMessage({message: 'Password must be longer 3 and shorted than 12'})
     ],
     authController.registration

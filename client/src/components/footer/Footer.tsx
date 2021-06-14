@@ -1,6 +1,6 @@
 import React from 'react'
 import {useSelector} from 'react-redux'
-import {GetHand, GetThisFile} from '../../redux/selectors'
+import {GetThisFile} from '../../redux/selectors'
 import FileFC from '../disk/fileList/file/File'
 import classes from './Footer.module.css'
 

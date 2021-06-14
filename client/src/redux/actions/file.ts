@@ -25,8 +25,9 @@ export const getFiles = (dirId: any, sort: string | null) => {
         }
     }
 }
-export const createDir = (dirId: string, name: string) => {
+export const createDir = (dirId: string | null, name: string) => {
     return async (dispatch: any) => {
+        console.log(dirId)
         const response = await instance.post(`/files`,
             {
                 name,
@@ -149,7 +150,7 @@ export function getFile(fileId: string) {
 }
 
 export function downloadFile(file: any) {
-    return async (dispatch: any) => {
+    return async () => {
         const response = await fetch(`${baseURL}/api/files/download?id=${file._id}`, {
             headers: {
                 Authorization: `Bearer ${localStorage.getItem('token')}`

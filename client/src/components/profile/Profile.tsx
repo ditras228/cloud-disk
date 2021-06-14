@@ -53,7 +53,7 @@ const Profile = () => {
                                 placement={'bottom'}
                                 overlay={
                                     <Tooltip id={`tooltip-progress`}>
-                                        {`${Math.round(diskPercent)}%`}
+                                        {`Занято ${Math.round(diskPercent)}%`}
                                     </Tooltip>
                                 }
                             >

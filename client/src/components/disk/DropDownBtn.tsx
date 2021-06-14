@@ -19,8 +19,9 @@ const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
 ));
 export const DropdownBtn: React.FC<IDropDownBtnProps> = ({setSort}) => {
     return (
-        <Dropdown>
-            <Dropdown.Toggle as={CustomToggle} variant="outline-success" id="dropdown-basic"  className={classes.dropdown}>
+        <Dropdown  className={classes.dropdown}>
+            <Dropdown.Toggle
+                                     as={CustomToggle} variant="outline-success" id="dropdown-basic">
                 Сортировка
             </Dropdown.Toggle>
 

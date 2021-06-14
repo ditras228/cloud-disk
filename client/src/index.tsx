@@ -5,6 +5,7 @@ import reportWebVitals from './reportWebVitals';
 import {Provider} from "react-redux";
 import {store} from "./redux/reducers";
 import 'bootstrap/dist/css/bootstrap.min.css';
+import './global.css';
 import ToastList from './components/toast/Toast'
 ReactDOM.render(
     <Provider store={store}>

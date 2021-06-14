@@ -1,8 +1,7 @@
 import React from 'react'
-import {Button, ButtonGroup, Col, Container, Fade, OverlayTrigger, Row, Tooltip} from 'react-bootstrap'
+import {Button, ButtonGroup, Col, Container, Fade, Row} from 'react-bootstrap'
 import classes from './File.module.css'
 import {CloudDownloadFill, FileEarmark, Folder, Link45deg, TrashFill} from 'react-bootstrap-icons'
-import sizeFormat from '../../../utils/sizeFormat'
 
 const FooterFile: React.FC<any> = ({props, file, fade}) => {
     return (
@@ -18,7 +17,6 @@ const FooterFile: React.FC<any> = ({props, file, fade}) => {
                         }
                     </Col>
                     <Col style={{display: 'flex', alignItems: 'center'}} sm={6}>{file.name}</Col>
-                    <Col style={{display: 'flex', alignItems: 'center'}} sm={3}> {sizeFormat(file.size)}</Col>
                     <Col sm={2} className={classes.buttons} >
                         <ButtonGroup >
                                 <Button

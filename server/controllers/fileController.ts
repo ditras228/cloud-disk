@@ -17,8 +17,11 @@ class FileController {
             const {name, type, parent} = req.body
             const user = await UserSchema({_id: req.user._id}) as IUser
             const file = new FileSchema({name, type, parent, user: req.user._id}) as IFile
-            const parentFile = await FileSchema.findOne({_id: parent}) as IFile
+            let parentFile=null as IFile | null
             let path
+
+            if(parent!=='0')
+                parentFile= await FileSchema.findOne({_id: parent}) as IFile
 
             if (!parentFile) {
                 path = `${user._id}/${file.name}`
@@ -267,7 +270,7 @@ class FileController {
             const folderId = req.body.folderId
             const file = await FileSchema.findOne({_id: fileId, user: req.user._id}) as IFile
             let folder
-            let newPath = ''
+            let newPath
 
             if(folderId !=='0')
             {
@@ -352,9 +355,11 @@ class FileController {
     async deleteAvatar(req: Request & IReq, res: Response & IRes) {
         try {
             const user = await UserSchema.findOne({_id: req.user._id})
-            fs.unlinkSync(`${req.static}/${user.avatar}`)
-            user.avatar = null
-            await user.save()
+            if(user.avatar!=='undefined'){
+                fs.unlinkSync(`${req.static}/${user.avatar}`)
+                user.avatar = 'undefined'
+                await user.save()
+            }
             return res.json(user)
         } catch (e) {
             console.log(e)

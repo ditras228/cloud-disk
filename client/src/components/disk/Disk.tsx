@@ -2,32 +2,31 @@ import React, {DragEvent, useEffect, useState} from 'react'
 import {useDispatch, useSelector} from 'react-redux'
 import {createDir, dropTo, getFiles, uploadFile} from '../../redux/actions/file'
 import FileList from './fileList/FileList'
-import {Button, Container, Dropdown, DropdownButton, Form, OverlayTrigger, Tooltip} from 'react-bootstrap'
+import {Container} from 'react-bootstrap'
 import {
     CurrentDir,
     DirStack,
     GetDropTo,
     GetHand,
-    GetIsMobile,
     GetThisFile,
     GetUploadFilesByDrop,
     Loader
 } from '../../redux/selectors'
 import CreateDirModal from '../modal/CreateDirModal'
-import {CloudUploadFill, FileEarmark, Folder, Grid3x3GapFill, List} from 'react-bootstrap-icons'
+import {CloudUploadFill} from 'react-bootstrap-icons'
 import Uploader from './uploader/Uploader'
 import classes from './Disk.module.css'
 import {actions} from '../../redux/actions/actions'
 import NavFolder from './fileList/navFolder/navFolder'
 import ShareModal from '../modal/ShareModal'
 import {IFile} from '../../types/types'
-import ToastList from '../toast/Toast'
-import {DropdownBtn} from './DropDownBtn'
 import Footer from '../footer/Footer'
+import Tools from './Tools'
+import RegSuccess from '../modal/RegSuccess'
 
 const Disk = () => {
     const dispatch = useDispatch()
-    const currentDir = useSelector(state => CurrentDir(state))
+    const currentDir = useSelector(state => CurrentDir(state)) as IFile
     const [show, setShow] = useState(false)
     const dirStack = useSelector(state => DirStack(state))
     const [sort, setSort] = useState('type')
@@ -35,8 +34,6 @@ const Disk = () => {
     const [dragEnter, setDragEnter] = useState(false)
     const [width, setWidth] = useState(0)
     const byDrop = useSelector(GetUploadFilesByDrop)
-    const isMobile = useSelector(state => GetIsMobile(state))
-    const folderInput = React.useRef(null)
     const [backButton, setBackButton] = useState(true)
     const dropToFolder = useSelector(state => GetDropTo(state)) as string
     const hand = useSelector(state => GetHand(state)) as IFile
@@ -46,7 +43,7 @@ const Disk = () => {
     useEffect(() => {
         if (hand && dropToFolder && byDrop)
             dispatch(dropTo(hand, dropToFolder))
-    }, [hand,dropToFolder, byDrop])
+    }, [hand, dropToFolder, byDrop])
 
     useEffect(() => {
         dispatch(getFiles(currentDir?._id, sort))
@@ -77,17 +74,15 @@ const Disk = () => {
     }, [window.innerWidth])
 
     function createDirHandler(name: string) {
-        dispatch(createDir(currentDir, name))
+         if(currentDir?._id!=='0')
+         dispatch(createDir(null, name))
+        else{
+             dispatch(createDir(currentDir?._id, name))
+
+         }
+
     }
 
-    function backClickHandler() {
-        dispatch(actions.file.popStack())
-    }
-
-    function fileUploadHandler(event: { target: { files: any } }) {
-        const files = [...event.target.files]
-        dispatch(uploadFile(files, currentDir))
-    }
 
     function dragEnterHandler(e: DragEvent<HTMLDivElement>) {
         e.preventDefault()
@@ -106,7 +101,7 @@ const Disk = () => {
         e.stopPropagation()
         let files = Array.from(e.dataTransfer.files)
 
-        dispatch(uploadFile(files, currentDir))
+        dispatch(uploadFile(files, currentDir._id))
         dispatch(actions.upload.showUploader())
         setDragEnter(false)
     }
@@ -119,115 +114,17 @@ const Disk = () => {
                  onDragOver={e => byDrop ? dragEnterHandler(e) : () => {
                  }}>
                 <Container style={{marginBottom: 20}}>
-                    <div className={classes.tools}>
-                        <Button
-                            onClick={backClickHandler}
-                            disabled={backButton && !loader}
-                            variant={'outline-primary'}
-                        >
-                            Назад
-                        </Button>
-                        <Button
-                            onClick={() => setShow(true)}
-                            variant={'outline-success'}
-                        >
-                            Создать папку
-                        </Button>
-                        <div className={classes.options}>
-                            {!isMobile &&
-                            <div className={classes.view}>
-
-                                <OverlayTrigger
-                                    placement={'bottom'}
-                                    overlay={
-                                        <Tooltip id={`tooltip-grid`}>
-                                            Сетка
-                                        </Tooltip>
-                                    }
-                                >
-                                    <Button variant={'outline-danger'}
-                                            onClick={() => setView('grid')}>
-                                        <Grid3x3GapFill/>
-                                    </Button>
-                                </OverlayTrigger>
-
-                                <OverlayTrigger
-                                    placement={'bottom'}
-                                    overlay={
-                                        <Tooltip id={`tooltip-list`}>
-                                            Список
-                                        </Tooltip>
-                                    }
-                                >
-                                    <Button variant={'outline-danger'}
-                                            onClick={() => setView('list')}>
-                                        <List/>
-                                    </Button>
-                                </OverlayTrigger>
-
-                            </div>
-                            }
-                            <DropdownBtn setSort={setSort}/>
-
-                        </div>
-
-                    </div>
-                    {isMobile
-                        ?
-                        <Form className={classes.uploadBtn}>
-                            <Form.File
-                                id="custom-file-translate-scss"
-                                type="file"
-                                label="Загрузить"
-                                lang="ru"
-                                custom
-                                multiple={true}
-                                onChange={fileUploadHandler}
-                                ref={folderInput}
-                            />
-                        </Form>
-                        :
-                        <DropdownButton
-                            id="dropdown-basic-button"
-                            title="Загрузить"
-                            variant={'outline-primary'}
-                            className={classes.uploadBtn}
-                        >
-
-                            <label htmlFor="file_input"
-                            className={classes.dropdown_item}>
-                                <div>
-                                    <FileEarmark className={classes.dropdown_i}/>
-                                    Загрузить файл
-                                </div>
-                            </label>
-                            <label htmlFor="folder_input"
-                                   className={classes.dropdown_item}>
-                                <Folder className={classes.dropdown_i}/>
-                                Загрузить папку
-                            </label>
-                        </DropdownButton>
-                    }
-                    <input id={'file_input'}
-                           type="file"
-                           multiple={true}
-                           onChange={fileUploadHandler}
-                           ref={folderInput}
-                           className={classes.hideInput}
-                    />
-                    <input id={'folder_input'}
-                           type="file"
-                           webkitdirectory={''}
-                           directory={''}
-                           multiple={true}
-                           onChange={fileUploadHandler}
-                           ref={folderInput}
-                           className={classes.hideInput}
+                    <Tools setSort={setSort}
+                           setShow={setShow}
+                           setView={setView}
+                           backButton={backButton}
+                           currentDir={currentDir?._id}
                     />
                     <CreateDirModal show={show} setShow={setShow} createDirHandler={createDirHandler}/>
                     <NavFolder/>
                     <FileList view={view} loader={loader}/>
                     <Uploader/>
+                    <RegSuccess/>
                     <ShareModal file={thisFile}/>
                 </Container>
                 <Footer/>

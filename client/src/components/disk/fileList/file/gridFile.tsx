@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useState} from 'react'
 import {Fade} from 'react-bootstrap'
 import classes from './File.module.css'
 import {FileEarmark, Folder} from 'react-bootstrap-icons'
@@ -8,15 +8,18 @@ import {actions} from '../../../../redux/actions/actions'
 
 const GridFile: React.FC<any> = ({props, file, fade}) => {
     const dispatch = useDispatch()
+
+    const clickHandler=(e: any)=>{
+        props.openDirHandler()
+        dispatch(actions.file.setHand(e.currentTarget))
+        dispatch(actions.file.setThisFile(file))
+    }
+
+
     return (
         <Fade in={fade}>
             <div
-                onClick={() => props.openDirHandler()}
-                onMouseDown={(e: any)=>{
-                    dispatch(actions.file.setHand(e.currentTarget))
-                    dispatch(actions.file.setThisFile(file))
-                }
-                }
+                onClick={e=>clickHandler(e)}
                 draggable={true}
                 onDragOver={(e:any)=>props.dragOverHandler(e) }
                 onDragLeave={(e:any)=>props.dragLeaveHandler(e) }

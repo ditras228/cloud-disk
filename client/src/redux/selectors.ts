@@ -56,3 +56,6 @@ export const GetTarget = (state: any)=>{
 export const GetToasts = (state: any)=>{
     return state.app.toasts
 }
+export const GetShowRegModal = (state: any)=>{
+    return state.app.regModal
+}

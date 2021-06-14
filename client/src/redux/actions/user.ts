@@ -8,7 +8,7 @@ export const registration = (email: string, password: string) => {
         await instance.post('auth/registration/', {
             email,
             password
-        }).then(response =>
+        }).then(() =>
             dispatch(userReducerAction.setRegistration())
         ).catch(e => {
                 dispatch(appReducerAction
@@ -33,6 +33,7 @@ export const submitUser = (hash: string) => {
             console.log(e)
         } finally {
             dispatch(actions.app.hideLoader())
+            dispatch(actions.app.isShowRegModal(true))
         }
 
 
@@ -87,23 +88,12 @@ export const uploadAvatar = (file: any) => {
 export const deleteAvatar = () => {
     return async (dispatch: any) => {
         try {
-            const response = await instance.delete('/avatar',
+            const response = await instance.delete('files/avatar',
                 {headers: {Authorization: `Bearer ${localStorage.getItem('token')}`}})
-            dispatch(userReducerAction.setUser(response.data))
+            dispatch(userReducerAction.addAvatar(response.data))
         } catch (e) {
             console.log(e)
         }
 
     }
-}
-export const SetMobile = () => {
-    return async (dispatch: any) => {
-        try {
-            dispatch(userReducerAction.setMobile(true))
-        } catch (e) {
-            console.log(e)
-        }
-
-    }
-
 }

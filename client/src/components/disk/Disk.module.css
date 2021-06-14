@@ -18,14 +18,30 @@
     grid-gap: 10px;
     grid-template-columns: 2fr 1fr;
 }
+@media(max-width: 1000px){
+    .options{
+        display: inline-block;
+        text-align: right;
+    }
+    .view{
+        display: none!important
+    }
+}
 .view{
     display: grid;
     justify-self: end;
     grid-gap: 10px;
-    grid-template-columns: repeat(2, 48px);
+    grid-template-columns: repeat(2, 40px);
 }
 .dropdown{
-    height: 100%;
+    height: 100% !important;
+    width: 100% !important;
+}
+@media(max-width: 450px){
+    .tools{
+        grid-template-rows: 1fr 1fr;
+
+    }
 }
 .dropdown_item{
     display: block;
@@ -39,12 +55,13 @@
     background-color: whitesmoke;
     cursor: pointer;
 }
-.uploadBtn{
-    margin-bottom: 20px;
-}
+
 .path{
     font-size: 20px;
 }
 .hideInput{
     display: none;
+}
+.boxBtn{
+    padding: 0 0 3px 0!important;
 }
