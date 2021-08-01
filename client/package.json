@@ -32,7 +32,7 @@
     "yup": "^0.32.9"
   },
   "scripts": {
-    "start": "SET PORT=3001 && react-scripts start",
+    "start": "set PORT=3001 && react-scripts start",
     "build": "./node_modules/.bin/react-scripts build",
     "test": "./node_modules/.bin/react-scripts test",
     "eject": "./node_modules/.bin/react-scripts eject"
