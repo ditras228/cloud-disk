@@ -34,8 +34,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "./node_modules/.bin/react-scripts build",
-    "build_express": "node server.ts",
+    "build": "./node_modules/.bin/react-scripts build && node server.ts",
     "test": "./node_modules/.bin/react-scripts test",
     "eject": "./node_modules/.bin/react-scripts eject"
   },
