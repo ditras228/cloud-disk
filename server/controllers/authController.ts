@@ -54,6 +54,8 @@ class AuthController {
 
     async submit(req: Request & IReq, res: Response & IRes) {
         try {
+            console.log(req.query.hash)
+            console.log(req.query)
             const user = await UserSchema.findOne({hash: req.query.hash}) as IUser
             if (!user) {
                 return res.status(404).json({message: 'Hash incorrect'})
