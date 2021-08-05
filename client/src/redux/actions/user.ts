@@ -26,7 +26,7 @@ export const submitUser = (hash: string) => {
     return async (dispatch: any) => {
         try {
             dispatch(actions.app.showLoader())
-            const response = await instance.get(`auth/submit?${hash}`)
+            const response = await instance.get(`auth/submit?hash=${hash}`)
             localStorage.setItem('token', response.data.token)
             dispatch(userReducerAction.setUser(response.data))
         } catch (e) {
