@@ -75,9 +75,9 @@ const Disk = () => {
 
     function createDirHandler(name: string) {
         if (currentDir?._id !== '0')
-            dispatch(createDir(null, name))
+            dispatch(createDir(currentDir, name))
         else {
-            dispatch(createDir(currentDir?._id, name))
+            dispatch(createDir(null, name))
 
         }
 
