@@ -1,11 +1,11 @@
-import {NextFunction} from 'express'
-import {IReq} from '../typings/IRoute'
+import { NextFunction } from "express";
+import { IReq } from "../typings/IRoute";
 
 function staticPath(path: any) {
-    return function (req: Request & IReq, res: Response, next: NextFunction) {
-        req.static = path
-        next()
-    }
+  return function (req: Request & IReq, res: Response, next: NextFunction) {
+    req.static = path;
+    next();
+  };
 }
 
-module.exports = staticPath
+module.exports = staticPath;
