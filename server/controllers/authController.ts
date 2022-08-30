@@ -1,6 +1,9 @@
 import { IReq, IRes } from "../typings/IRoute";
 import * as fs from "fs";
 import { IUser } from "../models/User";
+import { AuthRepo } from "../infrastructure/pg/authRepo";
+// @ts-ignore
+import mailer = require("../services/mailService");
 
 const UserSchema = require("../models/User.ts");
 const FileSchema = require("../models/File.ts");
@@ -11,7 +14,6 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const { validationResult } = require("express-validator");
 const { FileService } = require("../services/fileService.ts");
-const mailService = require("../services/mailService.ts");
 
 class AuthController {
   async registration(req: Request & IReq, res: Response & IRes) {
@@ -20,22 +22,15 @@ class AuthController {
       if (!errors.isEmpty()) {
         return res.status(400).json({ message: "Incorrect request", errors });
       }
-      const { email, password } = req.body;
-      const candidate = await UserSchema.findOne({ email });
-      if (candidate) {
-        return res
-          .status(400)
-          .json({ message: `User with email ${email} already exist` });
+
+      const checkExist = await AuthRepo.findUser(req, res);
+
+      if (checkExist) {
+        return checkExist;
       }
-      const hashPassword = await bcrypt.hash(password, 5);
-      const hashURL = await bcrypt.hash(email, 5);
-      const user = new UserSchema({
-        email,
-        password: hashPassword,
-        active: false,
-        hash: hashURL,
-      }) as IUser;
-      await user.save();
+
+      const registerUser = await AuthRepo.registration(req, res);
+
       if (!fs.existsSync(req.filePath)) {
         try {
           fs.mkdirSync(req.filePath);
@@ -45,11 +40,16 @@ class AuthController {
       }
       await FileService.createDir(
         req,
-        new FileSchema({ user: user._id, name: "", path: user._id })
+        new FileSchema({
+          user: registerUser.id,
+          name: "",
+          path: registerUser.id,
+        })
       );
 
-      await mailService.main(email, hashURL);
-      return res.status(200).json({ message: "Registration success" });
+      mailer(registerUser.email, registerUser.hashURL).then(() => {
+        res.send({ message: "Registration success" });
+      });
     } catch (e) {
       console.log(e);
       res.send({ message: "Server error" });
@@ -58,8 +58,6 @@ class AuthController {
 
   async submit(req: Request & IReq, res: Response & IRes) {
     try {
-      console.log(req.query.hash);
-      console.log(req.query);
       const user = (await UserSchema.findOne({
         hash: req.query.hash,
       })) as IUser;

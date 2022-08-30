@@ -18,6 +18,7 @@ export class FileService {
           fs.mkdirSync(filePath);
           return resolve({ message: "Dir was created" });
         } else {
+          console.log(filePath);
           return reject({ message: "Dir already exist" });
         }
       });

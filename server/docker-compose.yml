@@ -14,4 +14,4 @@ services:
     volumes:
       - pg_project:/var/lib/postgresql/data
     ports:
-      - ${POSTGRES_PORT:-5431}:5431
+      - ${POSTGRES_PORT:-5432}:5432
