@@ -1,5 +1,6 @@
 import { IFile } from "../models/File";
 import { IReq } from "../typings/IRoute";
+import { FileRepo } from "../infrastructure/pg/fileRepo";
 
 const fs = require("fs");
 const FileSchema = require("../models/File.ts");
@@ -8,11 +9,13 @@ export class FileService {
   static createDir(req, file: IFile) {
     try {
       let filePath;
+
       if (req != null) {
         filePath = this.getPath(req, file as IFile);
       } else {
         filePath = file.path;
       }
+
       return new Promise((resolve, reject) => {
         if (!fs.existsSync(filePath)) {
           fs.mkdirSync(filePath);
@@ -35,13 +38,13 @@ export class FileService {
     try {
       for (let i = 0; i < files.length; i++) {
         if (files[i].type === "dir") {
-          let dbFiles = await FileSchema.find({ parent: folder._id });
+          let dbFiles = await FileSchema.find({ parent: folder.id });
           if (dbFiles.length > 0)
             await FileService.removeDir(req, dbFiles, files[i]);
-        } else await FileSchema.findOneAndDelete({ _id: files[i]._id });
+        } else await FileSchema.findOneAndDelete({ _id: files[i].id });
         console.log(files[i].name);
       }
-      await folder.remove();
+      await FileRepo.deleteFile(folder.id);
       fs.rmdirSync(FileService.getPath(req, folder), { recursive: true });
     } catch (e) {
       console.log(e);

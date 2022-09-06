@@ -5,9 +5,6 @@ import { AuthRepo } from "../infrastructure/pg/authRepo";
 // @ts-ignore
 import mailer = require("../services/mailService");
 
-const UserSchema = require("../models/User.ts");
-const FileSchema = require("../models/File.ts");
-
 require("dotenv").config();
 
 const bcrypt = require("bcryptjs");
@@ -23,7 +20,7 @@ class AuthController {
         return res.status(400).json({ message: "Incorrect request", errors });
       }
 
-      const checkExist = await AuthRepo.findUser(req, res);
+      const checkExist = await AuthRepo.checkUserExist(req, res);
 
       if (checkExist) {
         return checkExist;
@@ -38,14 +35,12 @@ class AuthController {
           console.log(e);
         }
       }
-      await FileService.createDir(
-        req,
-        new FileSchema({
-          user: registerUser.id,
-          name: "",
-          path: registerUser.id,
-        })
-      );
+
+      await FileService.createDir(req, {
+        user: registerUser.id,
+        name: "",
+        path: registerUser.id,
+      });
 
       mailer(registerUser.email, registerUser.hashURL).then(() => {
         res.send({ message: "Registration success" });
@@ -58,30 +53,15 @@ class AuthController {
 
   async submit(req: Request & IReq, res: Response & IRes) {
     try {
-      const user = (await UserSchema.findOne({
-        hash: req.query.hash,
-      })) as IUser;
-      if (!user) {
-        return res.status(404).json({ message: "Hash incorrect" });
-      } else {
-        user.active = true;
-        user.hash = "";
-        await user.save();
-        const token = jwt.sign({ _id: user._id }, process.env.SECRETKEY, {
-          expiresIn: "1h",
-        });
+      const user = (await AuthRepo.findUserByHash(req, res)) as IUser;
+      const token = jwt.sign({ id: user.id }, process.env.SECRETKEY, {
+        expiresIn: "1h",
+      });
 
-        return res.json({
-          token,
-          user: {
-            _id: user._id,
-            email: user.email,
-            diskSpace: user.diskSpace,
-            usedSpace: user.usedSpace,
-            avatar: user.avatar,
-          },
-        });
-      }
+      return res.json({
+        token,
+        user,
+      });
     } catch (e) {
       console.log(e);
       return res.status(500).json("User submit error");
@@ -90,29 +70,31 @@ class AuthController {
 
   async login(req: Request & IReq, res: Response & IRes) {
     try {
-      const { email, password } = req.body;
+      const { password } = req.body;
+      const user = (await AuthRepo.findOne(req.user.id)) as IUser;
 
-      const user = await UserSchema.findOne({ email });
-      if (!user) return res.status(404).json({ message: "User not found" });
       const isPassValid = bcrypt.compareSync(password, user.password);
+
       if (!isPassValid)
         return res.status(400).json({ message: "Invalid password" });
 
       if (user.active === false) {
         return res.status(400).json({ message: "User not submitted" });
       }
-      const token = jwt.sign({ _id: user._id }, process.env.SECRETKEY, {
+
+      const token = jwt.sign({ id: user.id }, process.env.SECRETKEY, {
         expiresIn: "1h",
       });
+
       return res.json({
         token,
         user: {
-          _id: user._id,
+          id: user.id,
           email: user.email,
-          diskSpace: user.diskSpace,
-          usedSpace: user.usedSpace,
+          disk_space: user.disk_space,
+          used_space: user.used_space,
           avatar: user.avatar,
-        },
+        } as IUser,
       });
     } catch (e) {
       console.log(e);
@@ -122,40 +104,29 @@ class AuthController {
 
   async auth(req: Request & IReq, res: Response & IRes) {
     try {
-      const user = (await UserSchema.findOne({ _id: req.user._id })) as IUser;
+      const user = (await AuthRepo.findOne(req.user.id)) as IUser;
 
       if (user.active === false) {
         return res.status(400).json({ message: "User not submitted" });
       }
 
-      const token = jwt.sign({ _id: user._id }, process.env.SECRETKEY, {
+      const token = jwt.sign({ id: user.id }, process.env.SECRETKEY, {
         expiresIn: "1h",
       });
+
       return res.json({
         token,
         user: {
-          _id: user._id,
+          id: user.id,
           email: user.email,
-          diskSpace: user.diskSpace,
-          usedSpace: user.usedSpace,
+          disk_space: user.disk_space,
+          used_space: user.used_space,
           avatar: user.avatar,
-        },
+        } as IUser,
       });
     } catch (e) {
       console.log(e);
       res.send({ message: "Server error" });
-    }
-  }
-
-  async deleteUser(req: Request & IReq, res: Response & IRes) {
-    try {
-      const user = (await UserSchema.findOneAndDelete({
-        _id: req.user._id,
-      })) as IUser;
-      return res.json({ message: `User ${user.email} was deleted` });
-    } catch (e) {
-      console.log(e);
-      return res.json({ message: "Delete user error" });
     }
   }
 }
