@@ -1,7 +1,6 @@
 .PHONY: dev
 dev:
-	$(call _info, "\nСтарт express-сервера");
-	go run main.go
+	go run ./cmd/apiserver/main.go
 .PHONY: drop
 postgres:
 	$(call _warning, "\Старт Postgres'a");
