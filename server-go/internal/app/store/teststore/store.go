@@ -21,7 +21,7 @@ func (s *Store) User() store.UserRepository {
 
 	s.UserRepository = &UserRepository{
 		store: s,
-		users: make(map[string]*model.User),
+		users: make(map[int]*model.User),
 	}
 
 	return s.UserRepository
